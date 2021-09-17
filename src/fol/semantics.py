@@ -14,12 +14,12 @@ class FolWorld:
         self.var_map = var_map
     
     def evaluate(self, pred: str, ent: str) -> bool:
-        return self.pred_map[pred, ent] == 1
+        return self.pred_map[pred, ent]
 
     @classmethod
     def generate_all(cls, entities, predicates) -> List["FolWorld"]:
         n_params = len(entities) * len(predicates)
-        for assignment in product(*([[0, 1]] * n_params)):
+        for assignment in product(*([[True, False]] * n_params)):
             pred_map = {}
             for i, pred in enumerate(predicates):
                 for j, ent in enumerate(entities):
