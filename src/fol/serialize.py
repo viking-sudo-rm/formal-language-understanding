@@ -1,7 +1,8 @@
 """Convert expression trees to and from a readable tree format."""
 
+from typing import List, Union
+
 QUANTIFIERS = {"all", "some"}
-OPERATORS = {"and", "or", "not"}
 
 
 def to_string(tree, output_list=False):
@@ -21,25 +22,26 @@ def to_string(tree, output_list=False):
     return output
 
 
-def from_string(string, is_list=False):
+def from_string(string: Union[str, List[str]], is_list=False):
     if not is_list:
         string = string.split(" ")
     
-    stack = []
+    stack: List[list] = []
     while string:
-        token = string.pop()
+        token = string.pop(0)
         if token == ")":
-            full_const = stack.pop()
-            stack[0].append(full_const)
-        elif token in OPERATORS:
-            string.pop()
-            stack.push([token])
+            full_const = stack.pop(0)
+            if stack:
+                stack[0].append(full_const)
+            else:
+                assert not string
+                return full_const
         elif token in QUANTIFIERS:
-            var_name = string.pop()
-            string.pop()
-            stack.push([token, var_name])
+            var_name = string.pop(0)
+            string.pop(0)
+            stack.append([token, var_name])
+        elif string and string[0] == "(":
+            string.pop(0)
+            stack.append([token])
         else:
             stack[0].append(token)
-    
-    assert len(stack) == 1
-    return stack[0]

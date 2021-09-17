@@ -7,7 +7,7 @@ from random import randint
 
 from src.fol.syntax import FolSyntax
 from src.fol.semantics import FolSemantics, FolWorld
-from src.fol.serialize import to_string
+from src.fol.serialize import to_string, from_string
 from src.rational_speech import sample_document
 
 
@@ -26,7 +26,17 @@ def parse_args():
     return parser.parse_args()
 
 
+def size(tree):
+    """The number of leaves in the tree."""
+    if tree is None:
+        return 0
+    if isinstance(tree, str) or isinstance(tree, int):
+        return 1
+    return sum(size(child) for child in tree)
+
+
 def depth(tree):
+    """The longest rooted path in the tree."""
     if tree is None:
         return -1
     if isinstance(tree, str) or isinstance(tree, int):
@@ -44,14 +54,21 @@ def main(args):
     worlds = list(FolWorld.generate_all(entities, predicates))  # Has length 2^n_params = 16.
     utterances = list(syntax.generate(depth=args.depth, var_depth=args.var_depth, vacuous=args.vacuous))
     truth_values = torch.tensor([[semantics.evaluate(e, w) for w in worlds] for e in utterances])
-    costs = torch.tensor([depth(u) + 1 for u in utterances])
+    costs = torch.tensor([.1 * size(u) + depth(u) + 1 for u in utterances])
     belief_state = torch.zeros(len(worlds))
     belief_state[randint(0, len(worlds) - 1)] = 1
     document = sample_document(utterances, truth_values, costs, belief_state, length=args.doc_len)
 
-    print(worlds[belief_state.argmax()].pred_map)
+    world = worlds[belief_state.argmax()]
+    print(world.pred_map)
     for sentence in document:
-        print(to_string(sentence))
+        if args.eval:
+            value = semantics.evaluate(sentence, world)
+            print(to_string(sentence), "==", value)
+        else:
+            print(to_string(sentence))
+    
+    import pdb; pdb.set_trace()
 
 
 if __name__ == "__main__":

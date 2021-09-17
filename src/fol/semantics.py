@@ -13,9 +13,9 @@ class FolWorld:
         self.pred_map = pred_map
         self.var_map = var_map
     
-    def evaluate(self, pred: str, ent: str) -> Any:
-        return self.pred_map[pred, ent]
-    
+    def evaluate(self, pred: str, ent: str) -> bool:
+        return self.pred_map[pred, ent] == 1
+
     @classmethod
     def generate_all(cls, entities, predicates) -> List["FolWorld"]:
         n_params = len(entities) * len(predicates)
@@ -28,14 +28,28 @@ class FolWorld:
             yield cls(entities, predicates, pred_map, {})
 
 
+class Entity:
+    """A (constant) function of type <w, e>.
+    
+    Need this wrapper to avoid bound lambda issue."""
+
+    def __init__(self, name):
+        self.name = name
+    
+    def __call__(self, _):
+        return self.name
+
+
 class Predicate:
-    """Need this wrapper to avoid bound lambda issue."""
+    """A function of type <w, <e, t>>.
+    
+    Need this wrapper to avoid bound lambda issue."""
 
     def __init__(self, name):
         self.name = name
     
     def __call__(self, world):
-        return lambda entity: world.evaluate(self.name, entity)
+        return lambda ent: world.evaluate(self.name, ent)
 
 
 class FolSemantics:
@@ -51,7 +65,7 @@ class FolSemantics:
         self.entities = entities
         self.denotations = copy(self.DENOTATIONS)
         for ent in self.entities:
-            self.denotations[ent] = lambda _: ent
+            self.denotations[ent] = Entity(ent)
         for pred in self.predicates:
             self.denotations[pred] = Predicate(pred)
     
