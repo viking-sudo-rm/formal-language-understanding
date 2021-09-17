@@ -48,7 +48,7 @@ def main(args):
     belief_state = torch.zeros(len(worlds))
     belief_state[randint(0, len(worlds) - 1)] = 1
     document = sample_document(utterances, truth_values, costs, belief_state, length=args.doc_len)
-    
+
     print(worlds[belief_state.argmax()].pred_map)
     for sentence in document:
         print(to_string(sentence))
