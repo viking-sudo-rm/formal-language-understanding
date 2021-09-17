@@ -31,7 +31,7 @@ def depth(tree):
         return -1
     if isinstance(tree, str) or isinstance(tree, int):
         return 0
-    return max(depth(child) for child in tree)
+    return max(depth(child) + 1 for child in tree)
 
 
 @torch.no_grad()
