@@ -54,8 +54,7 @@ class RationalDialog:
                 1. Inferred distribution over listener belief state.
                 2. Distribution over utterances to produce.
         """
-        truth_values = self.truth_values / self.truth_values.sum()
-        speak_probs = self.speaker(truth_values, self.costs)
+        speak_probs = self.speaker(self.truth_values, self.costs)
         for _ in range(self.n_iter):
             listen_probs = self.listener(speak_probs)
             speak_probs = self.speaker(listen_probs, self.costs)
@@ -65,8 +64,7 @@ class RationalDialog:
         """Get two tensors (n_utterances, n_states) representing:
                 1. Distribution over belief state.
                 2. Inferred distribution over speaker utterances."""
-        truth_values = self.truth_values / self.truth_values.sum()
-        listen_probs = self.listener(truth_values)
+        listen_probs = self.listener(self.truth_values)
         for _ in range(self.n_iter):
             speak_probs = self.speaker(listen_probs, self.lengths)
             listen_probs = self.listener(speak_probs)
@@ -80,9 +78,10 @@ def sample_document(utterances, truth_values, costs, belief_state, length=5, tem
     dialog = RationalDialog(RationalSpeaker(temp=temp), RationalListener(temp=temp), truth_values, costs)
     for _ in range(length):
         listen_probs, speak_probs = dialog.speak()
-        # Sample an utterance by taking the expectation over the speaker's belief state. Could also sample from belief state here.
-        utter_weights = (speak_probs * belief_state).sum(dim=1)
-        utter_probs = utter_weights / utter_weights.sum()
+        # First sample a world from the speaker's belief state.
+        state_idx = Categorical(belief_state).sample()
+        # Then sample an utterance based on the distribution in this world.
+        utter_probs = speak_probs[:, state_idx].flatten()
         utter_idx = Categorical(utter_probs).sample()
         new_prior = listen_probs[utter_idx, :]
         dialog.listener.prior = new_prior

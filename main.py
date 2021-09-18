@@ -67,8 +67,6 @@ def main(args):
             print(to_string(sentence), "==", value)
         else:
             print(to_string(sentence))
-    
-    import pdb; pdb.set_trace()
 
 
 if __name__ == "__main__":
