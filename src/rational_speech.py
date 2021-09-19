@@ -1,3 +1,8 @@
+"""Implementation of rational speech acts (RSA) model for pragmatics.
+
+A `RationalDialog` represents a conversation. A `RationalAgent` represents a participant in a conversation.
+"""
+
 from typing import Any, Callable, Iterable, List
 import torch
 from torch import Tensor
@@ -90,7 +95,7 @@ class RationalDialog:
 
     @listify
     def sample_monologue(self, length: int = 5) -> List[str]:
-        """Generate a monologue from `self.speaker` to `self.listener`."""
+        """Generate a monologue from `self.speaker` attempting to convey their belief state."""
         for _ in range(length):
             # Have the speaker say something.
             utter_probs = self.speaker.speak(self)
