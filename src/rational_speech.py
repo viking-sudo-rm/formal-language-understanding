@@ -1,12 +1,13 @@
-from typing import Any, List
+from typing import Any, Callable, Iterable, List
 import torch
+from torch import Tensor
 from torch.distributions import Categorical
 
 
 INF = 1e9
 
 
-def listify(callback_fn):
+def listify(callback_fn: Callable[..., Iterable[Any]]) -> Callable[..., List[Any]]:
     """Convert a generator to a function returning a list."""
 
     def _wrapper(*args, **kwargs):
@@ -20,8 +21,8 @@ class RationalAgent:
 
     def __init__(
         self,
-        belief_state: torch.Tensor,  # Belief of this agent.
-        inferred_belief_state: torch.Tensor = None,  # Inferred belief of another agent.
+        belief_state: Tensor,  # Belief of this agent.
+        inferred_belief_state: Tensor = None,  # Inferred belief of another agent.
         temp: float = 1.0,
         n_iter: int = 1,
     ):
@@ -32,7 +33,7 @@ class RationalAgent:
         self.temp = temp
         self.n_iter = n_iter
 
-    def speak(self, dialog):
+    def speak(self, dialog: "RationalDialog") -> Tensor:
         """Return a distribution over utterances to produce of size (n_utterances,)."""
         speak_probs = self.speak_step(dialog.truth_values, dialog.costs)
         for _ in range(self.n_iter):
@@ -41,7 +42,7 @@ class RationalAgent:
         state_idx = Categorical(self.belief_state).sample()
         return speak_probs[:, state_idx]
 
-    def listen(self, dialog, utter_idx: int):
+    def listen(self, dialog: "RationalDialog", utter_idx: int) -> Tensor:
         """Return a distribution over inferred world states of size (n_states,)."""
         listen_probs = self.listen_step(dialog.truth_values, self.belief_state)
         for _ in range(self.n_iter):
@@ -49,7 +50,7 @@ class RationalAgent:
             listen_probs = self.listen_step(speak_probs, self.belief_state)
         return listen_probs[utter_idx, :]
 
-    def speak_step(self, listen_probs, costs):
+    def speak_step(self, listen_probs: Tensor, costs: Tensor) -> Tensor:
         """Represents a speaker step in the RSA process.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim1; output over dim0.
@@ -61,7 +62,7 @@ class RationalAgent:
         energies = surprisals - costs.unsqueeze(dim=1)
         return (self.temp * energies).softmax(dim=0)
 
-    def listen_step(self, speak_probs, prior):
+    def listen_step(self, speak_probs: Tensor, prior: Tensor) -> Tensor:
         """Represents a listener step in the RSA process.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim0; output over dim1.
@@ -76,8 +77,8 @@ class RationalDialog:
     def __init__(
         self,
         utterances: List[Any],
-        truth_values: torch.Tensor,
-        costs: torch.Tensor,
+        truth_values: Tensor,
+        costs: Tensor,
         speaker: RationalAgent,
         listener: RationalAgent = None,
     ):
@@ -88,7 +89,7 @@ class RationalDialog:
         self.listener = listener
 
     @listify
-    def sample_monologue(self, length=5):
+    def sample_monologue(self, length: int = 5) -> List[str]:
         """Generate a monologue from `self.speaker` to `self.listener`."""
         for _ in range(length):
             # Have the speaker say something.
