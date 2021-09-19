@@ -7,8 +7,8 @@ from random import randint
 
 from src.fol.syntax import FolSyntax
 from src.fol.semantics import FolSemantics, FolWorld
-from src.fol.serialize import to_string, from_string
-from src.rational_speech import sample_document
+from src.fol.serialize import to_string
+from src.rational_speech import RationalAgent, RationalDialog
 
 
 logging.basicConfig()
@@ -57,8 +57,9 @@ def main(args):
     costs = torch.tensor([.1 * size(u) + depth(u) + 1 for u in utterances])
     belief_state = torch.zeros(len(worlds))
     belief_state[randint(0, len(worlds) - 1)] = 1
-    document = sample_document(utterances, truth_values, costs, belief_state, length=args.doc_len)
 
+    dialog = RationalDialog(utterances, truth_values, costs, speaker=RationalAgent(belief_state))
+    document = dialog.sample_monologue(length=args.doc_len)
     world = worlds[belief_state.argmax()]
     print(world.pred_map)
     for sentence in document:
