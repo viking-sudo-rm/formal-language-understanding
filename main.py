@@ -5,10 +5,8 @@ import logging
 import torch
 from random import randint
 
-from src.fol.syntax import FolSyntax
-from src.fol.semantics import FolSemantics, FolWorld
-from src.fol.serialize import to_string
-from src.fol.utils import size
+from src.quantifier.syntax import QuantifierSyntax
+from src.quantifier.semantics import QuantifierSemantics, QuantifierWorld
 from src.rational_speech import RationalAgent, RationalDialog
 
 
@@ -20,25 +18,21 @@ log.setLevel(logging.INFO)
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("--doc_len", type=int, default=5)
-    parser.add_argument("--depth", type=int, default=2)
-    parser.add_argument("--var_depth", type=int, default=2)
+    parser.add_argument("--n_items", type=int, default=3)
+    parser.add_argument("--n_predicates", type=int, default=2)
     parser.add_argument("--eval", action="store_true")
-    parser.add_argument("--vacuous", action="store_true")
     return parser.parse_args()
 
 
 @torch.no_grad()
 def main(args):
-    entities = ["john", "mary"]
-    predicates = ["blue", "red"]
-    syntax = FolSyntax(entities, predicates)
-    semantics = FolSemantics(entities, predicates)
+    syntax = QuantifierSyntax(args.n_predicates)
+    semantics = QuantifierSemantics()
 
-    worlds = list(FolWorld.generate_all(entities, predicates))  # Has length 2^n_params = 16.
-    utterances = list(syntax.generate(depth=args.depth, var_depth=args.var_depth, vacuous=args.vacuous))
+    worlds = list(QuantifierWorld.generate_all(args.n_items, args.n_predicates))
+    utterances = list(syntax.generate())
     truth_values = torch.tensor([[semantics.evaluate(e, w) for w in worlds] for e in utterances])
-    # costs = torch.tensor([depth(u) + 1 for u in utterances])
-    costs = torch.tensor([size(u) for u in utterances])
+    costs = torch.tensor([len(u) / 3 for u in utterances])
     belief_state = torch.zeros(len(worlds))
     belief_state[randint(0, len(worlds) - 1)] = 1
     world = worlds[belief_state.argmax()]
@@ -48,17 +42,16 @@ def main(args):
     document = agent.sample_monologue(belief_state, length=args.doc_len)
     
     print("=" * 3, "World State", "=" * 3)
-    print(world.pred_map)
+    print({idx: pred for idx, pred in enumerate(world.predicates)})
     print()
 
     print("=" * 3, "Monologue", "=" * 3)
     for sentence in document:
         if args.eval:
             value = semantics.evaluate(sentence, world)
-            print(to_string(sentence), "==", value)
+            print(" ".join(str(x) for x in sentence), "==", value)
         else:
-            print(to_string(sentence))
-
+            print(" ".join(str(x) for x in sentence))
 
 if __name__ == "__main__":
     main(parse_args())

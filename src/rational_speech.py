@@ -8,7 +8,7 @@ Some references:
     3. https://wmonroeiv.github.io/pubs/yuan2018understanding.pdf
 """
 
-from typing import Any, Callable, Iterable, List, NamedTuple, Optional
+from typing import Any, Callable, Iterable, List, NamedTuple, Optional, Tuple
 import torch
 from torch import Tensor
 from torch.distributions import Categorical
@@ -52,15 +52,24 @@ class RationalAgent:
     def __init__(
         self,
         dialog: RationalDialog,
+        utility: str = "surprisal",
         temp: float = 1.0,
         n_iter: int = 1,
     ):
         self.dialog = dialog
+        self.utility = utility
         self.temp = temp
         self.n_iter = n_iter
 
-    def speak(self, inferred_belief_state: Optional[Tensor] = None) -> Tensor:
+    def speak(
+        self,
+        belief_state: Optional[Tensor] = None,  # Only used with KL divergence utility.
+        inferred_belief_state: Optional[Tensor] = None,
+    ) -> Tensor:
         """Return a conditional distribution over utterances to produce."""
+        belief_state = (
+            _uniform(self.dialog.num_worlds) if belief_state is None else belief_state
+        )
         inferred_belief_state = (
             _uniform(self.dialog.num_worlds)
             if inferred_belief_state is None
@@ -70,31 +79,46 @@ class RationalAgent:
         speak_probs = scores / scores.sum(dim=1, keepdim=True)
         for _ in range(self.n_iter):
             listen_probs = self.listen_step(speak_probs, inferred_belief_state)
-            speak_probs = self.speak_step(listen_probs, self.dialog.costs)
+            speak_probs = self.speak_step(listen_probs, belief_state)
         return speak_probs
 
-    def listen(self, belief_state: Optional[Tensor] = None) -> Tensor:
+    def listen(
+        self,
+        belief_state: Optional[Tensor] = None,
+        inferred_belief_state: Optional[Tensor] = None,
+    ) -> Tensor:
         """Return a conditional distribution over inferred world states."""
         belief_state = (
             _uniform(self.dialog.num_worlds) if belief_state is None else belief_state
         )
+        inferred_belief_state = (
+            _uniform(self.dialog.num_worlds)
+            if inferred_belief_state is None
+            else inferred_belief_state
+        )
         scores = self.dialog.truth_values * belief_state.unsqueeze(dim=0)
         listen_probs = scores / scores.sum(dim=0, keepdim=True)
         for _ in range(self.n_iter):
-            speak_probs = self.speak_step(listen_probs, self.dialog.costs)
+            speak_probs = self.speak_step(listen_probs, inferred_belief_state)
             listen_probs = self.listen_step(speak_probs, belief_state)
         return listen_probs
 
-    def speak_step(self, listen_probs: Tensor, costs: Tensor) -> Tensor:
+    def speak_step(self, listen_probs: Tensor, prior: Tensor) -> Tensor:
         """Represents a speaker step in the RSA process.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim1; output over dim0.
         """
-        surprisals = (listen_probs + 1e-6).log()
-        # surprisals = torch.where(
-        #     surprisals < INF, surprisals, INF * torch.ones_like(surprisals)
-        # )
-        energies = surprisals - costs.unsqueeze(dim=1)
+        if self.utility == "surprisal":
+            utilities = (listen_probs + 1e-3).log()
+            utilities = torch.where(utilities > -INF, utilities, -INF * torch.ones_like(utilities))
+        elif self.utility == "kl_div":
+            # FIXME: KL divergence doesn't make sense here. Would need to reorganize this stuff a bit.
+            terms = listen_probs * (prior.unsqueeze(dim=0) / listen_probs).log()
+            utilities = -terms.sum(dim=1)
+            breakpoint()
+        else:
+            return NotImplemented
+        energies = utilities - self.dialog.costs.unsqueeze(dim=1)
         return (self.temp * energies).softmax(dim=0)
 
     def listen_step(self, speak_probs: Tensor, prior: Tensor) -> Tensor:
@@ -109,7 +133,7 @@ class RationalAgent:
     def sample_monologue(
         self,
         speaker_belief_state: Tensor,
-        listener_belief_state: Optional[Tensor] = None,
+        listener_belief_state: Optional[Tensor] = None,  # Inferred by the speaker.
         length: int = 5,
         update_prior: bool = True,
     ) -> List[str]:
@@ -121,15 +145,45 @@ class RationalAgent:
         )
         for _ in range(length):
             # Sample an utterance from the speaker model.
-            speak_probs = self.speak(listener_belief_state)
-            world_idx = Categorical(speaker_belief_state).sample()
-            utter_probs = speak_probs[:, world_idx]
-            utter_idx = Categorical(utter_probs).sample()
+            speak_probs = self.speak(speaker_belief_state, listener_belief_state)
+            utter_idx = _sample_utterance(speak_probs, speaker_belief_state)
             yield self.dialog.utterances[utter_idx]
 
             # Update the listener belief based on the utterance.
             if update_prior:
-                listen_probs = self.listen(listener_belief_state)
+                listen_probs = self.listen(listener_belief_state, None)
                 listener_belief_state = listen_probs[utter_idx, :]
 
-            # TODO: Is this process implicitly minimizing KL divergence between `speaker_belief_state` and `listener_belief_state?`
+    # TODO: What's the right way to model a back-and-forth dialog?
+    # @listify
+    # def sample_dialog(
+    #     self,
+    #     state0: Tensor,
+    #     state1: Tensor,
+    #     length: int = 5,
+    # ) -> List[Tuple[int, str]]:
+    #     """Simulate a dialog where each person tries to infer each other's state, but their beliefs don't change.
+        
+    #     Each participant starts off assuming the other shares their beliefs.
+    #     """
+    #     inferred_state0 = _uniform(self.dialog.num_worlds)  # state1
+    #     inferred_state1 = _uniform(self.dialog.num_worlds)  # state0
+    #     for _ in range(length):
+    #         speak_probs = self.speak(state0, inferred_state1)
+    #         breakpoint()
+    #         utter_idx = _sample_utterance(speak_probs, state0)
+    #         yield 0, self.dialog.utterances[utter_idx]
+    #         listen_probs = self.listen(state1, inferred_state0)
+    #         inferred_state0 = listen_probs[utter_idx, :]
+
+    #         speak_probs = self.speak(state1, inferred_state0)
+    #         utter_idx = _sample_utterance(speak_probs, state1)
+    #         yield 1, self.dialog.utterances[utter_idx]
+    #         listen_probs = self.listen(state0, inferred_state1)
+    #         inferred_state1 = listen_probs[utter_idx, :]
+
+
+def _sample_utterance(speak_probs: Tensor, belief_state: Tensor) -> int:
+    world_idx = Categorical(belief_state).sample()
+    utter_probs = speak_probs[:, world_idx]
+    return Categorical(utter_probs).sample()

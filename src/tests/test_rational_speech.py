@@ -55,4 +55,12 @@ class TestRationalAgent(TestCase):
         # The "none" here is low probability, but gets sampled with this fixed seed.
         self.assertEqual(monologue, ["none", "null", "null", "none", "null"])
 
+    # @torch.no_grad()
+    # def test_sample_dialog(self):
+    #     state0 = torch.tensor([.5, .5, 0., 0.])
+    #     state1 = torch.tensor([0., .5, .5, 0.])
+    #     speaker = RationalAgent(self.quantifiers_dialog_costs)
+    #     dialog = speaker.sample_dialog(state0, state1)
+    #     breakpoint()
+
     # FIXME: Does temp work properly?
