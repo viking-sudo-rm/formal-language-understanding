@@ -61,7 +61,12 @@ def main(args):
     dialog = RationalDialog(utterances, truth_values, costs, speaker=RationalAgent(belief_state))
     document = dialog.sample_monologue(length=args.doc_len)
     world = worlds[belief_state.argmax()]
+
+    print("=" * 3, "World State", "=" * 3)
     print(world.pred_map)
+    print()
+
+    print("=" * 3, "Monologue", "=" * 3)
     for sentence in document:
         if args.eval:
             value = semantics.evaluate(sentence, world)

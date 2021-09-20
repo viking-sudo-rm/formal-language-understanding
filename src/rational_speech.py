@@ -1,6 +1,10 @@
 """Implementation of rational speech acts (RSA) model for pragmatics.
 
 A `RationalDialog` represents a conversation. A `RationalAgent` represents a participant in a conversation.
+
+Some references:
+    * https://www.problang.org/chapters/01-introduction.html
+    * https://wmonroeiv.github.io/pubs/yuan2018understanding.pdf
 """
 
 from typing import Any, Callable, Iterable, List
@@ -40,7 +44,7 @@ class RationalAgent:
 
     def speak(self, dialog: "RationalDialog") -> Tensor:
         """Return a distribution over utterances to produce of size (n_utterances,)."""
-        speak_probs = self.speak_step(dialog.truth_values, dialog.costs)
+        speak_probs = dialog.truth_values / dialog.truth_values.sum(axis=0, keepdim=True)
         for _ in range(self.n_iter):
             listen_probs = self.listen_step(speak_probs, self.inferred_belief_state)
             speak_probs = self.speak_step(listen_probs, dialog.costs)
@@ -49,7 +53,8 @@ class RationalAgent:
 
     def listen(self, dialog: "RationalDialog", utter_idx: int) -> Tensor:
         """Return a distribution over inferred world states of size (n_states,)."""
-        listen_probs = self.listen_step(dialog.truth_values, self.belief_state)
+        listen_probs = dialog.truth_values / dialog.truth_values.sum(axis=1, keepdim=True)
+        # listen_probs = self.listen_step(dialog.truth_values, self.belief_state)
         for _ in range(self.n_iter):
             speak_probs = self.speak_step(listen_probs, dialog.costs)
             listen_probs = self.listen_step(speak_probs, self.belief_state)
@@ -60,7 +65,7 @@ class RationalAgent:
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim1; output over dim0.
         """
-        surprisals = -(listen_probs + 1e-6).log()
+        surprisals = (listen_probs + 1e-6).log()
         surprisals = torch.where(
             surprisals < INF, surprisals, INF * torch.ones_like(surprisals)
         )
