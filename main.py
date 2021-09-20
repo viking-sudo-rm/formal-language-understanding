@@ -8,6 +8,7 @@ from random import randint
 from src.fol.syntax import FolSyntax
 from src.fol.semantics import FolSemantics, FolWorld
 from src.fol.serialize import to_string
+from src.fol.utils import size
 from src.rational_speech import RationalAgent, RationalDialog
 
 
@@ -24,24 +25,6 @@ def parse_args():
     parser.add_argument("--eval", action="store_true")
     parser.add_argument("--vacuous", action="store_true")
     return parser.parse_args()
-
-
-def size(tree):
-    """The number of leaves in the tree."""
-    if tree is None:
-        return 0
-    if isinstance(tree, str) or isinstance(tree, int):
-        return 1
-    return sum(size(child) for child in tree)
-
-
-def depth(tree):
-    """The longest rooted path in the tree."""
-    if tree is None:
-        return -1
-    if isinstance(tree, str) or isinstance(tree, int):
-        return 0
-    return max(depth(child) + 1 for child in tree)
 
 
 @torch.no_grad()
