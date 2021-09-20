@@ -54,14 +54,16 @@ def main(args):
     worlds = list(FolWorld.generate_all(entities, predicates))  # Has length 2^n_params = 16.
     utterances = list(syntax.generate(depth=args.depth, var_depth=args.var_depth, vacuous=args.vacuous))
     truth_values = torch.tensor([[semantics.evaluate(e, w) for w in worlds] for e in utterances])
-    costs = torch.tensor([.1 * size(u) + depth(u) + 1 for u in utterances])
+    # costs = torch.tensor([depth(u) + 1 for u in utterances])
+    costs = torch.tensor([size(u) for u in utterances])
     belief_state = torch.zeros(len(worlds))
     belief_state[randint(0, len(worlds) - 1)] = 1
-
-    dialog = RationalDialog(utterances, truth_values, costs, speaker=RationalAgent(belief_state))
-    document = dialog.sample_monologue(length=args.doc_len)
     world = worlds[belief_state.argmax()]
 
+    dialog = RationalDialog(utterances, truth_values, costs)
+    agent = RationalAgent(dialog)
+    document = agent.sample_monologue(belief_state, length=args.doc_len)
+    
     print("=" * 3, "World State", "=" * 3)
     print(world.pred_map)
     print()
