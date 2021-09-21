@@ -37,7 +37,10 @@ class QuantifierWorld:
                     if value
                 }
                 predicates.append(items)
-            yield QuantifierWorld(predicates, n_items)
+
+            # Ignore weird edge cases with meaningless predicates.
+            if all(len(pred) > 0 for pred in predicates):
+                yield QuantifierWorld(predicates, n_items)
 
 
 class QuantifierSemantics:
@@ -47,7 +50,7 @@ class QuantifierSemantics:
         "most": lambda mu, tot: mu > tot / 2,
         "all": lambda mu, tot: mu == tot,
         "none": lambda mu, tot: mu == 0,
-        "not_most": lambda mu, tot: mu <= tot / 2,
+        "not_most": lambda mu, tot: mu < tot / 2,
         "not_all": lambda mu, tot: mu < tot,
     }
 
