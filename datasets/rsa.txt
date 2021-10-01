@@ -1,0 +1,1000 @@
+entails most most; most 1 0; entails not_all not_all; all 1 0
+some 1 1; some 1 1; some 0 1; entails none not_all; not_all 0 1
+some 1 1; some 1 1; some 1 1; some 1 1
+some 0 1; some 1 1; all 1 1; some 1 0; entails none none
+most 1 1; some 1 0; entails none none
+some 0 1; entails all most; all 1 1; some 1 1; some 1 1
+some 0 1; entails not_all not_all; some 1 0; some 0 0; some 0 1
+some 0 1; some 1 0; some 1 0; some 1 1; some 1 0
+some 1 0; some 0 1; most 0 0
+entails none none; some 1 1; all 0 0; entails none none
+entails none not_all; most 1 1; entails all most; some 1 1
+entails all some; entails all most; some 0 0
+entails none none; all 0 0; entails not_all not_all; some 0 0; entails none not_all
+most 1 1; most 1 1; some 0 0
+some 1 1; most 1 1; most 0 0; entails all some; most 1 1
+some 1 1; entails none none; most 0 0; entails all most; entails most most
+entails most most; all 0 0; most 1 1; some 1 1
+entails all most; most 0 0; most 1 1; all 1 1
+entails all some; entails all some; all 1 1; some 0 0
+most 1 1; entails none none; all 1 1; entails all some; some 0 0
+entails most most; some 0 0; entails all most; entails none not_all
+all 0 0; some 1 1; some 1 1; all 0 0
+all 0 0; entails most most; most 1 1; entails all most; entails none not_all
+most 1 1; entails all most; most 0 0; entails none none; most 1 1
+entails not_all not_all; most 0 0; entails none none; entails not_all not_all; entails all most
+entails all some; most 1 1; entails most most
+entails all most; most 0 0; all 0 0; most 1 1; entails none not_all
+entails none not_all; most 1 1; some 1 1; most 0 0; entails all some
+entails none not_all; entails all some; entails all some; all 0 0
+all 1 1; all 1 1; entails none none
+most 1 1; some 0 0; most 0 0
+entails not_all not_all; entails all some; some 1 1; some 1 1
+all 1 1; most 1 1; entails none none; all 1 1
+entails not_all not_all; entails none not_all; entails none not_all; entails none none
+all 0 0; entails not_all not_all; most 0 0; entails not_all not_all; entails all some
+entails all some; most 0 0; all 1 1; most 0 0
+all 1 1; some 1 1; entails all some
+entails all some; some 0 0; all 0 0; entails none not_all
+most 0 0; entails all most
+all 0 0; some 0 0; entails all most; entails all some; some 0 0
+entails not_all not_all; all 1 1; most 0 0; entails all most
+most 0 0; most 0 0; entails none none
+entails not_all not_all; all 0 0; entails all some
+entails most most; entails not_all not_all
+entails all some; entails none none; entails most most; most 1 1; all 1 1
+entails none not_all; some 1 1; entails all most; entails all some
+entails not_all not_all; entails all some; most 1 1
+all 0 0; some 1 1
+most 0 0; entails all most; entails none none; entails all some; entails most most
+all 0 0; some 1 1; all 0 0; entails not_all not_all
+entails all most; some 1 1
+entails none not_all; all 1 1; entails none none
+most 0 0; all 1 1; most 1 1
+most 1 1; entails all some; all 1 1
+some 1 1; some 1 1; some 0 0; most 1 1
+some 1 1; some 1 1; all 0 0; all 0 0; some 0 0
+most 1 1; entails all some
+entails all some; most 0 0; entails none not_all; all 0 0; some 1 1
+all 1 1; entails all some; entails most most; entails all most
+all 0 0; entails not_all not_all; some 1 1; most 0 0
+entails not_all not_all; entails most most; some 0 0; some 1 1
+some 0 0; entails none none; entails none none; entails most most
+entails all some; some 0 0; some 1 1
+some 1 1; some 1 1; some 0 0
+all 0 0; entails none none; entails most most; most 1 1; most 1 1
+entails most most; entails not_all not_all; entails all some; some 1 1
+entails not_all not_all; entails none not_all; all 0 0; some 1 1
+most 1 1; all 0 0
+entails all most; entails none not_all; entails all most; entails all some
+some 0 0; all 0 0; most 1 1; entails none not_all
+entails none not_all; entails none none; entails not_all not_all
+entails not_all not_all; most 1 1; entails none not_all; some 0 0
+most 1 1; most 1 1; some 0 0; entails all most; most 0 0
+some 1 1; all 1 1
+entails all most; entails none not_all
+entails most most; entails none not_all; all 1 1; entails all most
+most 1 1; entails none none; all 0 0; entails most most; entails most most
+entails most most; most 0 0; some 1 1; all 0 0; entails most most
+entails all some; most 0 0; entails all most; entails all some
+entails none none; entails not_all not_all; entails most most; entails none none; most 1 1
+entails most most; most 0 0; most 0 0
+entails most most; entails not_all not_all; some 1 1
+all 1 1; most 1 1; entails all some; entails none not_all; entails most most
+entails all most; most 1 1; most 0 0; most 1 1
+some 0 0; entails not_all not_all; some 1 1; some 1 1; entails not_all not_all
+entails all some; some 1 1; most 1 1; most 0 0
+some 0 0; most 0 0; most 1 1
+entails not_all not_all; some 0 0; some 0 0; entails all most; all 0 0
+entails most most; entails most most; entails all some; some 1 1
+entails most most; entails most most; entails not_all not_all
+entails all some; entails most most; most 1 1; entails all most; all 0 0
+some 0 0; all 1 1; most 0 0; entails not_all not_all
+entails all most; entails none not_all
+entails most most; some 1 1; entails all most
+most 0 0; most 1 1; all 1 1
+most 1 1; some 0 0; most 0 0; entails most most
+entails most most; all 0 0; entails not_all not_all; entails all some
+entails none none; all 1 1; entails all most
+some 0 0; entails all most; most 0 0; entails all some
+entails none not_all; some 1 1; some 1 1; some 0 0
+entails all some; entails none not_all; most 0 0; all 1 1; most 0 0
+most 1 1; some 1 1; some 1 1; some 0 0
+some 1 1; all 1 1; most 1 1; entails most most
+entails none not_all; entails most most; most 0 0; some 1 1
+all 1 1; all 0 0; entails none none; some 1 1; entails none not_all
+entails none none; all 1 1; all 1 1
+entails most most; entails none none; entails not_all not_all
+most 0 0; some 1 1; entails most most; most 0 0
+entails all some; some 1 1; entails all most; entails none none; entails all most
+some 1 1; all 0 0; entails none not_all; all 0 0; all 1 1
+some 0 0; all 0 0; entails all most; most 1 1; entails most most
+entails all most; all 1 1; entails none not_all
+all 1 1; entails none not_all; entails all some; entails not_all not_all; all 1 1
+most 0 0; some 1 1; all 1 1; entails most most
+all 0 0; some 1 1; some 1 1; most 0 0
+entails none none; all 0 0; some 1 1; most 1 1
+entails none none; some 1 1; some 0 0; all 1 1; entails none not_all
+entails none not_all; entails all most; entails none none; entails none not_all; entails all some
+all 1 1; entails not_all not_all; some 0 0
+some 0 0; entails all some; entails none none; some 1 1; entails none not_all
+entails not_all not_all; some 1 1
+entails none not_all; entails none none; entails all some; entails most most; most 1 1
+all 0 0; most 1 1; entails none none; most 0 0
+all 0 0; entails all most; all 1 1; some 1 1
+most 1 1; some 1 1; entails all some; some 1 1
+entails all most; most 1 1; most 1 1; some 0 0
+entails most most; entails not_all not_all; all 0 0; entails not_all not_all; entails all some
+all 0 0; entails most most; some 1 1; some 1 1
+entails none none; entails most most; entails not_all not_all; all 0 0; all 0 0
+all 1 1; most 0 0; entails not_all not_all; entails not_all not_all; most 1 1
+entails not_all not_all; entails most most; entails none none; entails all most; entails all most
+most 1 1; all 0 0; entails not_all not_all
+most 1 1; entails all some; most 1 1; all 0 0
+some 0 0; entails none not_all; entails all some; all 1 1; most 0 0
+entails not_all not_all; entails all most; most 0 0
+entails none not_all; entails all most; most 1 1
+entails most most; entails most most; all 1 1
+all 0 0; all 0 0; all 0 0; entails not_all not_all
+entails not_all not_all; most 1 1; all 1 1; entails none not_all
+entails all most; most 1 1
+entails all most; most 0 0; some 1 1; all 0 0
+entails most most; most 0 0; entails all most; entails not_all not_all; all 1 1
+all 1 1; entails none none; some 1 1; most 0 0
+some 1 1; most 1 1; entails all most; entails all some
+entails not_all not_all; entails most most; entails all some; entails all most; some 0 0
+all 1 1; entails most most; all 0 0; entails none not_all; entails all some
+all 1 1; entails all some; some 1 1
+entails all most; most 0 0; entails most most; entails all most
+entails none not_all; most 0 0; entails not_all not_all; entails all most
+entails all most; entails all some; entails most most
+some 0 0; entails all most; entails not_all not_all; most 1 1
+some 1 1; all 1 1; all 1 1; some 1 1
+entails all some; entails not_all not_all; entails none not_all; all 1 1
+entails most most; entails not_all not_all; entails all some; entails all most; most 1 1
+entails none not_all; most 1 1; entails none not_all; all 1 1
+entails all most; all 0 0; entails all most; entails most most
+most 0 0; entails none not_all; some 0 0; entails most most
+entails most most; some 0 0; some 0 0; entails none not_all; entails not_all not_all
+all 1 1; entails not_all not_all; entails all some; all 0 0; entails not_all not_all
+entails none not_all; some 1 1; entails none not_all; most 1 1
+most 1 1; entails all most; entails most most; entails most most; entails none none
+entails not_all not_all; entails all most; most 0 0; entails not_all not_all; some 1 1
+entails all most; entails none not_all; entails none not_all; entails not_all not_all
+most 0 0; entails most most; all 1 1; entails most most; all 1 1
+entails all most; some 0 0; entails all most
+entails not_all not_all; all 1 1; entails all most; entails all some; entails all some
+entails not_all not_all; entails none not_all
+entails all most; entails not_all not_all; all 1 1; some 1 1
+most 0 0; entails most most; most 1 1; entails most most; entails not_all not_all
+entails all most; most 1 1; entails none not_all; all 0 0; entails none none
+most 0 0; entails all most; all 0 0; some 0 0; entails all most
+some 0 0; entails none none; some 1 1
+entails none not_all; all 1 1
+entails not_all not_all; most 0 0; all 0 0; entails not_all not_all
+all 0 0; all 0 0; some 0 0; some 0 0
+entails all some; entails not_all not_all; entails not_all not_all; all 0 0; most 0 0
+entails all most; entails most most; entails most most
+all 0 0; entails not_all not_all; entails not_all not_all; some 1 1; entails most most
+most 0 0; entails most most; entails all some
+entails none not_all; entails all most; entails none none
+most 1 1; most 0 0; entails most most; entails none not_all
+entails not_all not_all; most 0 0; some 1 1; entails not_all not_all; entails not_all not_all
+some 1 1; entails none none; all 1 1; entails all most
+entails most most; most 1 1; most 0 0; entails not_all not_all
+entails none none; entails none not_all; all 0 0
+some 1 1; all 1 1; some 1 1; entails all most; entails none none
+all 0 0; all 0 0; some 0 0; all 0 0; entails not_all not_all
+all 1 1; all 0 0; some 1 1; most 1 1; some 1 1
+most 0 0; entails none not_all; entails all some; some 0 0; entails not_all not_all
+entails none none; entails all most; all 1 1; some 0 0; entails not_all not_all
+entails none not_all; some 1 1; some 1 1; entails none none
+most 0 0; most 0 0; most 0 0; all 0 0
+all 0 0; all 1 1; entails none not_all; entails none none
+all 1 1; entails not_all not_all; all 0 0
+all 1 1; entails all most
+most 1 1; some 0 0; entails most most; some 1 1; some 1 1
+entails none not_all; entails none none; some 0 0
+some 1 1; all 1 1
+entails all most; most 1 1; all 0 0; entails none not_all
+entails none none; all 0 0; entails all some; most 0 0; some 1 1
+entails all some; all 0 0; entails not_all not_all
+entails none none; entails none none
+some 0 0; entails none none
+all 0 0; all 0 0; entails not_all not_all; most 1 1
+all 1 1; entails all most; entails none none
+most 0 0; entails all most; entails none none; entails most most
+entails most most; entails none not_all; some 1 1
+entails none not_all; all 0 0; most 1 1
+entails most most; entails none not_all; most 0 0; entails most most
+entails all most; most 0 0; entails not_all not_all
+entails all some; most 1 1; entails all some; most 0 0; most 0 0
+entails not_all not_all; most 0 0; entails none not_all; all 0 0
+all 1 1; some 0 0; some 0 0
+entails none not_all; all 0 0; most 0 0; entails all most
+entails not_all not_all; all 1 1; entails all most; all 1 1
+entails none none; entails most most; entails not_all not_all; some 0 0; entails not_all not_all
+some 0 0; entails all some; entails none not_all; all 1 1; all 1 1
+most 1 1; entails all most; all 1 1
+entails none not_all; entails all most; entails all most; all 0 0
+entails all some; most 1 1; all 0 0; entails none not_all; some 1 1
+entails none not_all; entails all most; some 1 1; some 1 1
+entails most most; entails most most; entails none not_all; all 0 0
+most 1 1; entails not_all not_all; some 1 1; entails not_all not_all
+some 0 0; some 0 0; entails all some; some 0 0; most 1 1
+some 0 0; entails none none; entails all most
+most 1 1; all 0 0; entails none not_all; entails none not_all
+some 1 1; entails all some; most 1 1; entails all some
+all 1 1; entails all most; all 0 0
+most 1 1; entails all most; entails all most; most 1 1
+entails none none; all 1 1; entails all most; some 0 0; most 0 0
+entails all some; entails none not_all; all 1 1; most 0 0
+entails all most; some 1 1; entails not_all not_all; entails all some
+most 1 1; entails all some; entails all most; all 1 1
+all 1 1; all 0 0; entails all some; entails all some
+some 1 1; all 0 0; most 0 0
+all 1 1; all 0 0; some 0 0; most 0 0; some 1 1
+entails not_all not_all; some 0 0; entails all most; most 1 1; entails all some
+entails not_all not_all; some 0 0; some 0 0
+all 1 1; most 1 1; entails none not_all
+all 0 0; entails all most; entails most most; most 1 1
+entails not_all not_all; all 0 0; some 1 1; entails none not_all; entails most most
+entails all most; some 0 0
+entails none not_all; entails all some; most 1 1
+most 0 0; entails not_all not_all; all 0 0; some 1 1; some 0 0
+entails none none
+most 1 1; some 0 0; all 0 0; all 1 1
+all 0 0; all 0 0; entails all some; all 0 0
+entails none none; entails all some; most 0 0; most 1 1; entails all most
+most 0 0; entails not_all not_all; some 1 1; all 1 1
+entails all some; some 0 0; most 0 0; all 0 0; most 0 0
+some 1 1; entails not_all not_all; entails all some; entails none not_all; entails not_all not_all
+entails none none; some 1 1; all 0 0; entails most most
+some 1 1; all 1 1; most 1 1; some 1 1; most 0 0
+all 1 1; all 1 1; entails not_all not_all; entails none none; entails all most
+all 0 0; most 1 1; entails most most; most 1 1
+entails none not_all; entails most most; entails all some; entails not_all not_all; entails none none
+some 1 1; entails not_all not_all; most 1 1; all 0 0; most 1 1
+entails none none; most 0 0; entails none none; entails none not_all; some 1 1
+some 0 0; some 0 0; entails none none
+entails none not_all; most 0 0; entails all most; most 0 0; most 0 0
+entails none not_all; entails not_all not_all; most 0 0; some 1 1; entails most most
+most 1 1; entails none none; entails none none; entails most most
+entails none not_all; all 0 0; entails most most; entails none none; all 1 1
+entails not_all not_all; some 0 0; some 0 0; some 1 1; most 1 1
+entails not_all not_all; all 0 0; entails all most; entails all most
+some 1 1; all 0 0; most 0 0; all 1 1; entails none none
+some 1 1; entails none not_all; most 0 0; most 1 1; entails none not_all
+entails all most; most 0 0; most 1 1; entails most most
+some 1 1; entails none none; entails all most
+most 1 1; entails none not_all; all 1 1
+entails none not_all; some 0 0; entails none none; entails all most; entails not_all not_all
+entails none none; all 1 1; entails none not_all
+all 1 1; all 0 0; entails none none; some 0 0; all 1 1
+all 0 0; entails all some; most 1 1
+most 0 0; most 1 1; entails none none; all 1 1
+all 0 0; some 1 1; entails all most; entails none none
+entails most most; entails most most; some 1 1; most 0 0; all 0 0
+entails none not_all; entails not_all not_all; entails not_all not_all; entails most most
+entails none not_all; all 1 1; entails all most; entails none not_all; all 0 0
+most 0 0; entails none not_all; some 1 1; all 1 1; most 0 0
+entails none not_all; entails none not_all; entails all most; entails none none; entails none not_all
+entails none not_all; entails most most; most 0 0; some 1 1
+entails not_all not_all; some 1 1; most 1 1
+entails all most; entails none not_all; all 1 1; most 1 1
+entails all some; all 1 1; entails most most; entails most most; entails not_all not_all
+most 1 1; entails all most; all 1 1; entails none not_all; some 1 1
+some 1 1; entails all some; some 0 0; most 1 1
+some 1 1; entails all most; all 0 0; all 0 0; entails none none
+all 1 1; entails not_all not_all; entails most most; all 0 0
+entails all some; entails most most; most 0 0; entails not_all not_all; entails all most
+most 0 0; some 1 1; most 0 0; entails none not_all
+entails not_all not_all; some 1 1; entails all some; most 1 1
+entails all some; some 0 0; some 1 1
+entails all most; entails not_all not_all; entails most most
+most 0 0; entails none not_all; entails not_all not_all
+entails most most; entails all most; entails all some; most 1 1; entails none none
+some 0 0; entails most most; entails none none; most 1 1; entails none not_all
+most 1 1; entails all most; entails all some; entails none none; all 1 1
+most 0 0; entails not_all not_all; entails none none; entails none not_all; entails none none
+some 0 0; most 1 1; entails most most; most 1 1; entails most most
+entails not_all not_all; entails all most; entails all some
+all 1 1; entails all some; all 1 1; entails all some
+entails most most; entails not_all not_all; entails all most
+most 1 1; entails none not_all; most 1 1; entails all most
+entails none not_all; some 1 1; all 1 1; all 1 1; most 1 1
+some 0 0; some 1 1; entails all most; entails all some
+entails none not_all; most 0 0; most 0 0; entails not_all not_all; most 1 1
+entails none not_all; some 0 0; entails all some; entails most most; entails all most
+entails all some; most 1 1; entails most most; most 1 1
+some 0 0; entails all some; entails all some; entails all some; entails all most
+entails none not_all; entails all some; most 1 1; entails none not_all
+entails all most; entails not_all not_all; entails all some
+entails all some; entails all some; most 0 0
+entails most most; most 1 1; all 0 0
+all 0 0; most 1 1; entails not_all not_all; most 1 1
+all 0 0; most 0 0; most 1 1; all 1 1
+entails none none; most 0 0; entails none none; most 0 0; some 0 0
+most 1 1; all 0 0; entails all some
+entails most most; all 0 0; entails not_all not_all; entails not_all not_all
+entails not_all not_all; entails all most; some 1 1; most 0 0
+entails most most; some 1 1; entails not_all not_all; entails most most
+entails not_all not_all; entails none not_all; entails none not_all; entails all some
+entails none none; all 0 0; all 0 0; entails all most; most 1 1
+most 0 0; most 0 0; all 0 0; some 0 0; entails all some
+most 0 0; all 1 1; some 0 0; entails most most; entails most most
+entails most most; entails not_all not_all; most 0 0; some 1 1; some 1 1
+entails none not_all; most 1 1; all 1 1; some 0 0
+all 0 0; entails none none; all 0 0; entails none not_all; entails none not_all
+most 0 0; all 0 0; all 1 1; most 1 1; entails not_all not_all
+entails most most; most 0 0; entails most most
+most 1 1; all 1 1; entails none none; entails most most
+entails all some; some 1 1; all 1 1; entails all most; all 0 0
+entails all most; some 1 1; entails not_all not_all; some 0 0
+most 0 0; entails all most; all 0 0; entails not_all not_all; some 0 0
+entails none none; all 0 0; entails none none; some 1 1; entails all most
+most 0 0; entails none none; most 1 1; all 1 1
+all 0 0; entails not_all not_all; all 1 1; entails none not_all; entails all most
+entails all most; some 1 1; some 0 0; most 1 1
+entails none not_all; entails none not_all; most 0 0; most 1 1
+all 0 0; entails all some; entails none none
+entails not_all not_all; most 0 0; all 1 1; all 1 1; entails all some
+most 0 0; all 1 1; all 0 0
+entails all most; some 0 0; most 0 0; most 0 0
+most 1 1; all 0 0; most 0 0
+most 0 0; entails most most; some 0 0; entails not_all not_all
+all 1 1; some 1 1; entails all some; entails none none; entails most most
+most 1 1; entails most most; some 1 1
+entails none not_all; all 1 1; all 0 0
+entails none not_all; some 0 0; most 1 1; entails all most; most 0 0
+some 1 1; most 0 0; entails none not_all; entails most most; entails all some
+entails most most; entails not_all not_all; most 0 0; some 1 1
+entails all most; entails all most; entails not_all not_all
+entails none none; most 0 0; some 1 1; entails all most; some 1 1
+some 1 1; some 0 0; entails all some; entails all some
+some 1 1; entails not_all not_all; most 1 1; entails all some
+some 1 1; most 1 1; some 0 0
+entails all most; most 0 0; entails not_all not_all
+entails not_all not_all; entails all some; all 0 0; some 0 0
+all 1 1; entails not_all not_all; most 1 1; entails all some
+entails most most; all 0 0; entails all some; some 0 0
+some 0 0; most 0 0
+all 1 1; most 1 1; most 1 1; entails most most; entails not_all not_all
+entails all some; most 1 1; entails all some; all 1 1; all 1 1
+all 1 1; most 0 0; most 0 0; some 0 0; entails not_all not_all
+entails not_all not_all; entails none none; entails none none; entails not_all not_all; some 0 0
+entails most most; most 1 1; most 0 0; entails most most
+entails none not_all; entails all some; all 1 1; most 1 1
+entails none not_all; entails not_all not_all; some 1 1; all 1 1
+most 1 1; entails none none; entails all most; some 0 0; entails not_all not_all
+entails none not_all; entails none none; most 0 0; some 1 1
+all 1 1; some 0 0; all 1 1; all 0 0; entails not_all not_all
+all 0 0; entails not_all not_all; all 1 1; some 0 0
+most 0 0; entails not_all not_all; entails all most; entails none none; entails all some
+entails not_all not_all; entails all some; most 0 0; most 1 1
+entails none not_all; some 1 1; most 0 0; all 1 1; entails most most
+entails none none; entails most most; entails most most; entails none not_all
+entails most most; some 1 1; entails most most
+most 1 1; entails all some; all 0 0; some 0 0
+entails none not_all; most 1 1; entails not_all not_all; entails none none; all 0 0
+entails none not_all; entails most most; some 1 1
+some 0 0; all 1 1; entails not_all not_all
+most 1 1; all 1 1; all 0 0; entails all some
+entails all some; entails most most; entails none not_all; entails none not_all; entails none not_all
+entails most most; entails all most; some 0 0; entails not_all not_all
+entails all most; some 0 0; entails none not_all; entails none not_all
+all 0 0; all 0 0; most 1 1; entails none none
+some 1 1; most 1 1; most 0 0; entails none none
+some 1 1; entails most most; entails most most; most 1 1; entails none none
+most 1 1; some 0 0; most 1 1; entails none none; most 0 0
+most 1 1; most 1 1; entails none none; entails most most; entails most most
+all 0 0; most 0 0; all 1 1; most 0 0; most 0 0
+some 1 1; entails all some; entails most most; all 1 1
+entails none none; entails all some; entails most most; entails none none; most 1 1
+entails not_all not_all; entails none not_all; entails all some; entails all some; some 1 1
+entails none not_all; entails all most; all 1 1; entails none none; entails none none
+entails none none; some 1 1; most 0 0; most 0 0; some 1 1
+some 1 1; all 1 1; entails none none; entails none not_all
+most 0 0; all 0 0; all 0 0
+entails none not_all; entails all some; most 1 1
+most 0 0; entails none not_all; all 1 1; some 0 0; entails none not_all
+entails all some; entails not_all not_all; all 1 1; most 1 1; some 0 0
+some 0 0; entails none not_all; entails none not_all; all 1 1; entails most most
+entails none none; entails none not_all; most 1 1
+entails all most; entails none not_all; all 1 1; entails none none; entails all some
+entails all some; all 1 1; entails none none; all 1 1; all 0 0
+entails not_all not_all; some 1 1; all 1 1
+some 1 1; entails all most; some 1 1
+most 1 1; entails none not_all; entails most most; all 1 1; entails most most
+most 1 1; entails all most; some 0 0; some 0 0
+entails none none; entails none none; entails all some; most 1 1
+most 1 1; most 0 0; entails most most; some 0 0
+some 1 1; some 0 0; most 1 1; some 0 0; entails none not_all
+some 1 1; all 1 1; entails none none
+some 1 1; entails all some; most 1 1; entails all most; entails not_all not_all
+entails none none; some 1 1; entails none none; entails all some
+most 1 1; some 0 0; entails most most
+most 1 1; most 1 1; entails none not_all; all 1 1
+some 0 0; entails all some; entails none not_all; entails not_all not_all; entails all some
+some 1 1
+entails all some; most 0 0; most 1 1; entails all most
+entails none none; entails not_all not_all; most 0 0; entails all some; entails none not_all
+most 0 0; all 1 1; entails not_all not_all; some 1 1
+some 1 1; entails all most; all 0 0; entails not_all not_all
+most 0 0; entails all most; entails all most
+some 0 0; entails all some; entails none not_all; most 1 1
+entails none not_all; some 1 1
+most 1 1; all 1 1; all 0 0; some 1 1; entails none not_all
+some 0 0; all 1 1; entails none none; most 1 1
+some 1 1; entails all most; entails none not_all; all 0 0
+entails all most; some 0 0; entails all some; entails most most
+all 1 1; entails not_all not_all; entails all some; entails all most; some 1 1
+all 0 0; entails not_all not_all; some 0 0; most 0 0; all 1 1
+some 1 1; most 1 1; entails all some; entails all most; some 0 0
+entails not_all not_all; most 1 1; all 0 0; some 0 0; entails not_all not_all
+entails all most; entails none not_all; entails most most; entails none none
+all 1 1; all 0 0; entails all most; entails most most
+entails all most; entails all most; entails most most; all 1 1
+most 1 1; entails most most; all 0 0
+most 1 1; some 1 1; entails none not_all; entails all most; all 1 1
+entails none not_all; some 0 0; all 0 0
+most 1 1; entails none none; most 0 0; all 0 0
+most 0 0; entails none not_all; most 0 0; all 1 1
+entails none none; entails most most; entails all most; all 1 1; some 1 1
+most 1 1; some 1 1; some 1 1; entails all most; entails all some
+entails all most; entails not_all not_all; entails none none
+entails most most; most 1 1; all 0 0; entails most most; most 1 1
+some 0 0; entails all some; entails none none; most 1 1; most 1 1
+some 1 1; all 1 1; entails none not_all
+entails none not_all; entails none none; entails none none
+all 0 0; all 0 0; all 0 0; some 0 0; most 0 0
+entails none none; most 1 1; entails none none; entails not_all not_all
+entails none not_all; entails not_all not_all
+entails all some; entails all some; all 1 1; entails none none
+some 0 0; all 0 0; some 1 1; all 1 1; entails none not_all
+entails none not_all; all 1 1; entails all most; most 0 0
+entails all some; most 1 1; all 1 1
+some 1 1; entails not_all not_all; entails all most; some 0 0
+entails all some; some 0 0; entails none not_all; most 0 0
+entails all most; most 1 1; entails none none; some 0 0
+some 0 0; all 1 1; entails none not_all; most 1 1
+all 1 1; entails none not_all; entails all most; all 0 0; some 0 0
+most 0 0; entails most most; entails none none; entails none not_all; most 0 0
+entails not_all not_all; most 1 1; entails most most; most 1 1
+all 0 0; entails not_all not_all; most 0 0; entails most most
+entails none none; some 1 1; all 0 0
+entails all some; entails all most; entails most most; most 0 0
+all 1 1; entails none none; all 0 0
+some 0 0; some 0 0; most 0 0; entails none none; most 0 0
+entails all most; all 1 1; all 0 0; entails not_all not_all
+entails all some; all 0 0; all 1 1; entails not_all not_all; entails none none
+entails not_all not_all; most 1 1; some 1 1; entails most most
+entails none none; entails all some; all 1 1; entails all most
+entails not_all not_all; all 0 0; some 1 1
+most 1 1; all 0 0; entails not_all not_all
+most 1 1; entails none not_all; all 1 1; entails not_all not_all; entails not_all not_all
+entails none none; entails not_all not_all; most 0 0; entails not_all not_all; entails none none
+entails none none; most 1 1; some 0 0; entails most most
+all 0 0; entails none not_all; entails none not_all; entails none none; most 0 0
+most 1 1; some 0 0; some 1 1; all 0 0
+entails not_all not_all; most 0 0; all 1 1; all 0 0; entails most most
+entails none none; entails all some; all 0 0; most 0 0; all 1 1
+all 1 1; most 1 1; entails none not_all; all 1 1; all 0 0
+entails none not_all; most 1 1; entails all some; entails most most; entails most most
+entails most most; entails not_all not_all; entails most most; all 0 0
+most 0 0; entails none not_all; entails all most; entails all most
+all 0 0; some 1 1; entails all most
+entails not_all not_all; some 1 1; most 0 0; entails none not_all
+entails most most; entails none none; all 0 0; most 1 1
+some 0 0; entails most most; some 0 0; entails none none; all 1 1
+most 0 0; all 0 0
+some 1 1; entails all some; entails none none; entails most most
+all 1 1; entails none not_all; entails most most; entails all some
+entails none none; some 0 0; all 0 0; all 0 0; most 1 1
+most 1 1; some 0 0
+entails none none; entails most most; some 1 1; most 0 0; entails most most
+some 0 0; entails none none; entails all most; entails none none
+entails all some; all 0 0; entails not_all not_all; entails none not_all
+most 1 1; entails not_all not_all; some 0 0
+entails all most; entails none none; some 1 1; entails most most; most 1 1
+all 1 1; all 0 0; some 0 0; entails all some
+entails all most; most 1 1; entails all most; entails none not_all
+entails all some; most 0 0; some 0 0; entails none none
+entails none not_all; entails all most; all 1 1; all 1 1
+all 1 1; some 1 1; some 1 1
+most 0 0; all 1 1; entails none none
+entails none none; some 1 1; most 1 1; all 0 0
+most 1 1; entails not_all not_all; entails most most; some 0 0; most 1 1
+most 0 0; entails none not_all
+most 1 1; most 1 1; some 1 1; entails not_all not_all; entails not_all not_all
+all 0 0; all 0 0; some 0 0; some 0 0; entails none not_all
+entails none none; entails all some
+entails most most; most 0 0; entails all most; entails all most
+entails none not_all; entails all some; some 0 0
+all 0 0; most 0 0; entails all some
+all 0 0; entails all most; entails none not_all; entails none not_all; entails none none
+entails most most; most 1 1; entails all some; some 0 0
+some 0 0; some 1 1; entails not_all not_all; most 0 0
+all 1 1; most 0 0; some 0 0
+entails most most; entails none not_all; some 0 0; entails not_all not_all; entails most most
+entails not_all not_all; most 1 1; entails none not_all; some 0 0; entails all most
+entails all most; most 1 1; most 0 0; entails not_all not_all
+entails all most; entails all most; all 0 0
+all 0 0; entails none not_all; entails none none; most 1 1; most 0 0
+entails none none; all 0 0; most 0 0; entails not_all not_all; most 1 1
+all 0 0; entails all some; entails not_all not_all; entails not_all not_all
+all 1 1; all 1 1; some 0 0
+entails none not_all; entails none none; all 0 0
+most 1 1; some 0 0; entails all some; entails all most
+entails none not_all; entails none none; entails most most; entails none none
+entails all most; most 1 1; most 0 0; most 1 1
+most 1 1; some 1 1; entails none none; entails all some; all 1 1
+entails most most; most 0 0; some 0 0; most 0 0; some 1 1
+some 0 0; entails not_all not_all; entails most most
+entails most most; most 1 1; entails not_all not_all; most 1 1; all 1 1
+all 1 1; some 1 1; entails not_all not_all
+entails all most; entails all some; entails not_all not_all; entails all some
+all 0 0; entails all most; all 1 1; most 1 1
+entails most most; entails all some; entails all most; some 1 1
+all 1 1; some 0 0; some 1 1; entails none not_all; entails all some
+all 0 0; entails none none; entails all most; entails most most; most 0 0
+all 1 1; entails all most; some 1 1
+most 1 1; all 0 0; entails none not_all; all 0 0
+entails none not_all; entails all most; entails all most; entails all most
+all 0 0; entails none none; entails not_all not_all
+most 1 1; some 0 0; most 0 0
+most 1 1; entails all some; some 1 1; all 0 0
+all 1 1; most 1 1; most 0 0; all 1 1; some 1 1
+entails none none; most 1 1; entails all most; some 1 1; entails none none
+most 1 1; entails none none; all 0 0; most 0 0
+entails none none; some 0 0; most 0 0; all 1 1; entails most most
+entails all some; entails none none; some 1 1; some 0 0; entails not_all not_all
+entails most most; all 0 0; all 1 1
+some 0 0; most 0 0; most 0 0; some 1 1; entails not_all not_all
+some 1 1; some 1 1; entails most most; all 0 0; most 1 1
+most 0 0; all 0 0; most 1 1; entails all some
+entails all most; all 0 0; most 1 1
+entails none not_all; entails all some; entails none none
+some 0 0; entails most most; entails all some; entails all some; entails none not_all
+some 0 0; entails not_all not_all; entails not_all not_all
+entails most most; entails none not_all; entails not_all not_all
+entails not_all not_all; entails all most; entails most most; all 0 0; entails all some
+all 1 1; entails all most; entails none not_all
+entails none none; most 0 0; all 0 0
+entails all most; entails most most; all 0 0; entails none not_all; some 0 0
+most 0 0; entails all some; entails none not_all
+entails none not_all; entails none not_all; entails none not_all; all 1 1
+all 1 1; entails none not_all; all 0 0; most 1 1; some 1 1
+all 0 0; some 0 0; all 0 0; all 1 1
+entails none none; all 1 1; entails all most
+entails none not_all; entails not_all not_all; all 1 1; some 0 0; all 0 0
+most 0 0; most 1 1; all 0 0; all 1 1
+entails none not_all; entails all most; most 1 1
+entails all some; some 0 0; entails all some; all 1 1; entails none none
+entails none none; all 0 0; all 1 1; entails all most; most 1 1
+entails all some; entails most most; all 1 1; some 0 0
+all 0 0
+all 0 0; all 1 1; most 0 0; all 1 1; some 0 0
+all 0 0; all 0 0; all 1 1; some 1 1; all 1 1
+entails all most; entails not_all not_all; entails none none
+entails all most; some 0 0; most 1 1
+all 1 1; all 1 1; entails most most; most 0 0
+entails none not_all; most 1 1; entails most most
+entails none none; most 0 0; all 1 1
+entails not_all not_all; entails not_all not_all
+entails none none; most 1 1; all 1 1; all 1 1; some 0 0
+entails not_all not_all; entails not_all not_all; most 0 0; some 1 1
+entails all most; some 0 0; all 0 0; some 1 1
+entails all most; entails all most; all 1 1; entails all most; all 0 0
+entails not_all not_all; entails none none; entails not_all not_all; most 0 0
+entails not_all not_all; entails most most; entails not_all not_all
+most 1 1; entails all most; entails none not_all
+entails most most; entails none none; most 1 1; entails none not_all
+some 0 0; entails most most; entails none not_all; some 0 0; entails none not_all
+entails all some; most 1 1; entails none none; entails none not_all
+entails all most; entails none not_all; entails none none; entails not_all not_all; all 1 1
+all 1 1; all 0 0; most 0 0
+entails none not_all; entails not_all not_all; entails none not_all; some 0 0
+all 0 0; entails none not_all; all 1 1; some 1 1; all 0 0
+most 0 0; entails none none; all 1 1; entails none none; entails not_all not_all
+all 1 1; entails all some; most 0 0; all 0 0
+all 0 0; entails all most; some 1 1; all 1 1; some 0 0
+entails all some; most 0 0; all 1 1; entails most most; all 1 1
+most 0 0; entails all some; all 0 0; entails all some; all 1 1
+all 0 0; entails all most; most 1 1; entails all some
+entails none none; all 1 1; entails not_all not_all; entails most most; entails all most
+all 0 0; most 0 0; all 1 1; all 0 0
+entails most most; entails all some; all 1 1; some 0 0; most 0 0
+entails all some; most 0 0; some 1 1; some 1 1
+most 1 1; entails all some; some 1 1
+most 0 0; all 1 1; entails all some; entails all some; some 1 1
+most 0 0; some 1 1; all 0 0; all 1 1
+most 1 1; some 1 1; most 1 1; entails most most
+entails none none; most 0 0; entails none none; most 0 0
+most 1 1; some 0 0
+most 1 1; most 0 0; entails most most; entails none not_all; most 0 0
+all 0 0; entails none not_all; entails none not_all; all 0 0
+all 0 0; all 0 0; entails most most; some 0 0
+entails none none; entails not_all not_all; some 0 0; some 0 0; entails all some
+some 0 0; some 1 1; entails all most; entails none none
+entails all most; most 0 0; most 0 0; entails not_all not_all
+entails all some; most 1 1; all 0 0
+entails all most; entails none not_all; entails none not_all; entails all most; entails all some
+entails all some; entails most most; entails most most
+entails all some; some 1 1; entails none none; all 0 0
+some 0 0; some 1 1; entails all most; entails not_all not_all; all 0 0
+entails most most; entails all most; entails all most
+entails none not_all; entails none not_all; entails none not_all; all 1 1
+some 1 1; entails none not_all; entails most most; some 0 0; some 1 1
+most 1 1; entails none none; most 0 0; some 0 0
+entails all some; entails none none; all 0 0; entails not_all not_all
+entails all most; some 0 0; most 0 0; entails most most
+all 1 1; all 0 0; all 1 1; most 0 0
+entails none not_all
+some 0 0; all 0 0; entails most most; most 1 1
+some 0 0; entails not_all not_all; entails none not_all; most 0 0; entails all some
+entails all some; all 0 0; some 0 0
+most 1 1; most 1 1; all 0 0; entails all some; some 0 0
+entails none not_all; all 0 0; most 1 1
+all 1 1; entails not_all not_all; entails not_all not_all; entails not_all not_all; all 0 0
+entails none none; most 0 0; entails none not_all; most 0 0
+most 1 1; most 0 0; all 1 1; all 0 0; most 0 0
+entails none none; entails most most; all 0 0
+entails all some; all 1 1; entails all most; some 0 0
+entails not_all not_all; all 1 1; all 0 0
+all 0 0; entails all some; some 1 1; entails most most
+most 0 0; entails none not_all; entails none not_all; all 1 1
+all 0 0; all 1 1; entails all most; all 1 1; all 0 0
+entails most most; entails all most; entails most most; some 0 0; all 1 1
+entails all some; most 1 1; entails none not_all; some 0 0; most 1 1
+most 1 1; all 1 1; entails all some
+some 0 0; all 1 1; some 1 1; entails most most
+some 0 0; entails none none; entails all most
+all 0 0; entails not_all not_all; entails not_all not_all; entails none none
+entails none not_all; all 0 0; most 1 1; entails all some
+entails not_all not_all; some 0 0; some 0 0; most 1 1
+entails none not_all; entails none none; some 0 0; some 0 0; most 1 1
+some 0 0; some 1 1; entails all some; entails none none
+most 0 0; entails none none; most 1 1; most 0 0; some 0 0
+all 1 1; some 0 0; all 0 0; most 0 0; all 1 1
+most 1 1; some 0 0; entails not_all not_all; most 1 1; most 0 0
+entails most most; some 1 1; most 0 0; most 1 1; entails most most
+most 0 0; entails not_all not_all; some 0 0; some 0 0; most 0 0
+entails all most; all 0 0; entails not_all not_all; entails not_all not_all; all 0 0
+entails none not_all; entails most most; some 1 1; entails none not_all; some 1 1
+all 0 0; all 0 0; some 1 1
+entails all some; all 0 0; all 0 0; entails none not_all
+entails all some; entails all most; entails all most; some 1 1; all 1 1
+entails none none; some 0 0; entails not_all not_all; entails not_all not_all
+entails none none; some 0 0
+all 1 1; entails all most; entails not_all not_all; most 0 0; entails all some
+entails none none; most 1 1; entails all most
+entails not_all not_all; all 1 1; all 0 0; most 1 1
+all 0 0; entails all some; entails none none; some 0 0
+most 0 0; some 0 0; all 0 0
+most 0 0; some 0 0; entails all most; most 1 1
+entails not_all not_all; entails none none; entails not_all not_all; entails none none
+entails not_all not_all; all 0 0; some 1 1; entails none none; entails all most
+entails not_all not_all; all 1 1; some 0 0; entails all most; some 1 1
+entails not_all not_all; all 0 0; some 0 0; some 1 1
+entails most most; entails all most; most 1 1; all 1 1; entails none not_all
+some 0 0; entails none none; most 1 1; most 1 1; entails none not_all
+entails all most; entails none none; most 1 1; entails none none; most 0 0
+some 0 0; entails most most; entails most most; all 0 0
+some 1 1; entails not_all not_all; entails all most; entails not_all not_all; some 0 0
+entails all most; some 1 1; most 1 1; entails most most
+entails most most; some 0 0; most 1 1; entails all some; all 0 0
+all 0 0; entails all some; most 0 0; entails none not_all
+all 1 1; entails none none; all 0 0; all 0 0
+entails all some; entails not_all not_all; some 1 1; entails all most
+entails none not_all; entails not_all not_all; entails all some; most 0 0; most 0 0
+most 0 0; most 1 1; some 0 0; all 1 1; entails none none
+entails all some; entails none not_all; some 1 1; entails all most; some 1 1
+entails none not_all; entails all some; entails most most; some 1 1; all 0 0
+entails none none; entails not_all not_all; entails most most; all 1 1; most 0 0
+all 0 0; all 0 0; all 1 1; entails all most
+most 1 1; entails most most; entails none none; all 0 0; all 0 0
+most 1 1; entails most most; most 1 1; entails all some
+most 1 1; all 0 0; some 0 0; all 0 0; entails none none
+entails most most; most 0 0; entails all some; entails none not_all
+entails none not_all; some 0 0; most 0 0; some 1 1
+entails not_all not_all; all 0 0; entails not_all not_all; entails all some; entails not_all not_all
+entails none not_all; entails most most; some 0 0; entails all most; entails most most
+some 0 0; entails none none; some 0 0; some 1 1
+entails none not_all; entails all some; entails all most; entails not_all not_all
+most 1 1; some 1 1; most 0 0; entails none not_all; entails all some
+some 0 0; some 1 1; all 0 0; most 0 0
+entails none none; some 1 1; all 1 1
+all 1 1; entails none not_all; some 0 0
+entails not_all not_all; entails most most; most 0 0; most 0 0
+entails most most; all 0 0; all 0 0; entails none none
+entails not_all not_all; most 1 1; entails none none; entails all most
+entails all most; entails all some
+some 0 0; entails all some; entails none not_all; entails none none
+entails not_all not_all; entails all some; entails none none; entails most most
+entails none none; all 1 1; most 0 0; all 1 1; entails all some
+entails none not_all; entails not_all not_all; some 1 1; entails all most; entails all some
+entails not_all not_all; entails none not_all; all 0 0; most 0 0
+all 0 0; entails not_all not_all; most 1 1; all 1 1; entails none not_all
+entails not_all not_all; some 0 0; all 0 0; entails most most; most 1 1
+entails none not_all; entails most most; entails not_all not_all
+all 0 0; all 1 1; all 0 0
+entails most most; entails none not_all; most 1 1; entails most most; entails most most
+entails not_all not_all; all 1 1; most 1 1; all 0 0; all 0 0
+all 0 0; entails none not_all; most 1 1; entails not_all not_all
+entails none not_all; most 0 0; entails all most; all 1 1
+all 1 1; most 0 0; entails all some; all 1 1; entails most most
+most 1 1; some 1 1; some 1 1; all 1 1; entails most most
+entails none not_all; entails all some; all 0 0
+entails most most; all 1 1; entails all some; all 1 1
+some 0 0; most 0 0; entails none none
+entails all some; all 0 0; most 0 0
+entails none none; entails none not_all; entails none none; all 0 0; entails not_all not_all
+all 1 1; entails none none; all 1 1
+all 1 1; all 0 0; entails all some; entails not_all not_all; some 0 0
+entails all most; entails all most; all 1 1; some 0 0; entails none none
+entails none none; most 0 0; most 0 0; all 0 0; entails most most
+entails not_all not_all; entails all some; all 1 1; some 0 0
+entails all some; some 1 1; entails most most; entails most most
+most 0 0; most 1 1; most 1 1
+most 0 0; some 1 1; some 0 0; all 1 1
+most 1 1; most 1 1; most 1 1; entails none none; entails none none
+some 0 0; entails all some; entails none none; entails none none
+most 0 0; entails none not_all; entails most most; some 1 1
+entails all most; all 0 0; entails none not_all; entails all some; entails all most
+entails most most; all 1 1; entails none none
+entails all most; all 1 1; entails all some; entails all some; most 0 0
+all 1 1; entails all most; most 0 0
+most 0 0; all 0 0; entails all most; entails none not_all
+most 1 1; most 1 1; entails none none; some 1 1
+entails none not_all; entails most most; some 1 1; all 0 0
+all 0 0; some 0 0; entails none none; some 0 0
+some 0 0; some 0 0; some 0 0; entails none none
+most 0 0; entails all some; all 0 0; entails none none; all 1 1
+entails all most; entails most most; entails all some
+some 1 1; some 0 0
+all 0 0; entails none none; entails none none
+entails all some; most 0 0
+all 1 1; all 1 1; all 1 1
+all 1 1; some 1 1; entails none none; most 1 1
+entails all most; entails none none; entails none not_all; most 0 0; most 0 0
+all 0 0; entails all most; some 1 1; entails not_all not_all; all 1 1
+some 0 0; all 1 1; most 0 0; most 1 1
+all 0 0; most 1 1; entails all most
+most 0 0; most 1 1; all 0 0; entails all most
+some 0 0; entails most most; all 1 1
+all 0 0; entails none none; some 1 1; most 0 0; some 1 1
+all 0 0; most 1 1; entails none not_all; entails none none
+entails all most; most 1 1; entails none not_all; entails not_all not_all; entails none not_all
+all 0 0; entails all most; all 0 0; entails all some; entails none none
+some 1 1; entails none not_all; all 1 1
+entails none none; some 1 1; entails all most; entails all most; most 0 0
+some 0 0; all 0 0; most 1 1; entails none not_all; all 1 1
+entails none not_all; entails most most; some 0 0; some 1 1; all 1 1
+some 1 1; entails none none; some 0 0; most 1 1; most 1 1
+entails none none; entails all most; some 1 1; some 1 1; most 0 0
+most 1 1; entails none none; entails not_all not_all
+entails all some; all 0 0; most 0 0; entails none not_all; most 0 0
+entails all most; entails none not_all; entails all most; some 0 0
+most 1 1; entails all most; entails none not_all
+entails none none; most 1 1; entails most most
+some 1 1; some 0 0
+entails all most; entails not_all not_all; entails none none; all 0 0; some 0 0
+most 1 1; some 1 1; all 0 0; some 0 0
+entails none not_all; all 1 1; entails most most; some 1 1; most 1 1
+all 0 0; most 0 0; entails most most
+some 0 0; entails most most; entails none not_all
+most 1 1; entails all most; entails all some; most 0 0
+most 1 1; entails none not_all; entails none none; all 0 0; most 1 1
+all 1 1; most 0 0; all 1 1; entails most most
+entails none none; entails most most; most 1 1
+all 1 1; all 0 0; some 1 1
+entails all some; some 1 1; all 1 1; all 1 1
+entails all some; some 1 1; entails none not_all; some 0 0; entails most most
+some 1 1; most 0 0; entails not_all not_all; some 1 1
+some 0 0; entails none none; most 1 1
+most 1 1; some 0 0; entails all some; entails none none; most 0 0
+entails all some; entails most most; most 0 0; some 0 0; entails none not_all
+all 0 0; entails none none; all 0 0; some 0 0
+some 1 1; all 1 1; entails not_all not_all; entails none not_all; entails all some
+entails all some; all 1 1; entails all some
+entails none not_all; some 1 1; some 0 0; all 1 1; all 0 0
+all 0 0; some 0 0; entails all some; entails none not_all
+all 1 1; entails all most; some 0 0; some 0 0; some 0 0
+entails none not_all; entails most most; all 1 1; all 1 1; most 1 1
+entails all some; entails none not_all
+entails not_all not_all; most 1 1; most 0 0
+entails none none; entails none not_all; entails none none
+entails all some; most 1 1; all 0 0
+entails none none; entails all some; entails none not_all; entails all most
+most 0 0; entails none not_all; all 1 1; entails none not_all
+entails none not_all; entails all some; entails none none
+entails most most; entails none not_all; entails most most; entails all most; all 1 1
+most 0 0; some 0 0; some 1 1; most 1 1; entails none none
+some 0 0; some 0 0; entails none not_all; some 1 1; all 0 0
+entails all some; entails all some; entails all some; some 0 0
+some 0 0; entails all most; entails none not_all; some 0 0; entails none not_all
+entails none none; entails none none; entails most most; entails most most
+entails all most; entails not_all not_all; entails none not_all; entails not_all not_all
+all 0 0; entails most most; all 1 1; some 1 1
+some 1 1; some 1 1; some 0 0
+all 0 0; all 1 1; entails none none; all 0 0
+all 1 1; entails all most; entails all most; entails none not_all
+entails all most; all 1 1; all 0 0; most 1 1; all 1 1
+most 0 0; entails not_all not_all; most 0 0; some 0 0; entails most most
+entails none none; all 1 1; some 1 1
+entails not_all not_all; most 1 1; some 1 1; some 0 0; entails all most
+entails most most; most 1 1; entails all most; most 0 0; most 1 1
+entails all most; some 0 0
+entails most most; most 1 1; most 0 0; entails not_all not_all; entails none not_all
+entails all some; entails all most; entails none none; entails most most
+most 1 1; all 1 1; entails all some; most 1 1
+entails all some; entails all most; some 1 1
+entails none none; entails all some; all 0 0
+entails most most; most 0 0; most 1 1; entails most most; entails most most
+all 1 1; all 0 0; most 1 1; entails not_all not_all; entails all some
+entails most most; most 0 0; entails all some; entails none none
+entails none not_all; all 1 1; entails none not_all; entails most most
+entails all most; most 0 0; entails none none; all 0 0; most 1 1
+entails all most; entails not_all not_all; entails not_all not_all; most 1 1; entails none not_all
+entails not_all not_all; some 0 0; entails none none; some 0 0
+entails all most; entails not_all not_all; entails none not_all
+entails not_all not_all; some 0 0; entails all some; most 1 1
+some 1 1; all 0 0; some 0 0; some 1 1; entails all some
+all 0 0; entails not_all not_all; entails none not_all; most 0 0
+entails none none; entails none not_all; some 1 1; all 1 1
+entails all some; entails most most; entails most most; entails all some
+entails none none; some 0 0; most 0 0; most 1 1; entails none not_all
+entails not_all not_all; some 0 0; entails none none; entails most most
+most 1 1; most 1 1; all 1 1; entails all some
+entails none not_all; all 1 1; entails most most
+entails most most; some 0 0; entails none not_all; entails most most; some 1 1
+entails all most; all 0 0
+entails none none; entails most most; entails all most
+some 1 1; some 1 1; most 1 1; entails none not_all; entails all most
+some 1 1; most 0 0; most 1 1; all 0 0; all 1 1
+all 0 0; entails none none; all 0 0; entails not_all not_all; entails none none
+entails none not_all; entails all some; entails all most; entails all most
+entails all some; entails most most; entails not_all not_all; entails most most
+most 0 0; entails none none; entails none none; entails most most; entails none none
+some 0 0; most 0 0; most 1 1; some 0 0
+some 0 0; entails all some; all 1 1
+some 1 1; entails most most; entails most most; some 1 1; entails none none
+some 0 0; entails all some; entails all some
+most 0 0; entails all most; entails none none
+entails not_all not_all; most 0 0; entails none none; entails all some; all 0 0
+entails none none; entails all most; entails all most; entails most most
+some 1 1; entails not_all not_all; all 1 1; entails all most; entails none not_all
+entails none none; entails all most; all 1 1; entails none not_all; entails none none
+all 0 0; all 0 0; some 0 0; entails none not_all
+entails none none; all 0 0; most 1 1; all 1 1
+all 0 0; most 0 0; most 0 0; entails most most
+all 0 0; entails not_all not_all; all 0 0; most 0 0; some 1 1
+some 0 0; some 0 0; most 0 0
+some 1 1; entails most most
+most 1 1; some 0 0; entails all some; entails none not_all
+most 0 0; all 1 1; all 0 0; entails not_all not_all
+all 1 1; all 1 1; entails all most
+most 0 0; entails most most; entails none none
+entails not_all not_all; some 1 1; all 1 1; all 1 1; entails all most
+entails all some; entails all most; most 1 1; all 1 1
+most 0 0; most 1 1
+all 0 0; some 0 0; all 1 1
+entails all some; entails most most; entails none none; all 1 1
+some 0 0; some 0 0; most 1 1; most 1 1
+most 1 1; entails none not_all; most 0 0; entails all some; entails all most
+most 0 0; all 1 1; entails not_all not_all; entails none not_all; most 0 0
+some 1 1; entails all most; entails all some; most 1 1
+entails most most; entails all most; entails none not_all
+all 0 0; entails most most; entails all most; most 0 0
+all 1 1; all 1 1; entails not_all not_all; all 1 1
+some 0 0; entails most most; most 1 1; all 0 0; entails none none
+entails most most; entails all some; entails none not_all
+most 1 1; most 0 0; entails most most; entails not_all not_all
+most 1 1; some 1 1; entails not_all not_all; entails all some; entails all most
+entails none not_all; some 0 0; some 1 1
+some 1 1; most 1 1
+some 1 1; some 0 0; some 0 0; entails most most; some 1 1
+entails all most; entails all some; all 0 0; all 0 0
+all 1 1; some 1 1; most 1 1; some 1 1; entails not_all not_all
+entails all some; entails none none; all 0 0; all 1 1; entails none none
+entails most most; entails all most; most 1 1; all 1 1; all 0 0
+entails none not_all; some 1 1
+most 0 0; all 1 1; some 0 0
+most 1 1; entails none not_all; entails all some; entails not_all not_all
+entails not_all not_all; some 1 1; all 0 0; entails none none
+entails none not_all; entails most most; most 0 0
+most 1 1; most 1 1
+most 0 0; some 1 1; entails none not_all; all 0 0; all 0 0
+some 1 1; entails not_all not_all; entails most most; most 1 1; entails none not_all
+entails all most; most 0 0; some 0 0; entails all some; entails none not_all
+most 0 0; entails none not_all; all 0 0; entails none none; entails none none
+some 0 0; entails not_all not_all; most 1 1; most 1 1; entails none none
+all 0 0; some 1 1; all 1 1; some 0 0
+entails none none; some 0 0; most 0 0; entails none not_all
+all 1 1; most 1 1; most 1 1; entails all most; entails all most
+entails most most; entails not_all not_all; all 0 0; entails all some; most 0 0
+entails all most; entails all some; entails none none; entails none not_all; entails all some
+most 0 0; entails not_all not_all; some 1 1; some 1 1; most 0 0
+entails none none; entails most most; entails most most
+entails most most; entails all some; entails all some; entails not_all not_all; entails none not_all
+all 0 0; entails most most; most 0 0; all 1 1
+entails none not_all; entails all some; entails most most
+entails most most; most 0 0; most 1 1; some 0 0
+entails most most; some 1 1; entails most most; entails none none; all 0 0
+entails none not_all; entails all most; some 0 0; some 1 1
+most 1 1; most 0 0; entails none not_all; some 1 1
+some 1 1; entails none not_all; entails all some; entails all some; entails all some
+some 1 1; most 0 0; entails most most; entails not_all not_all
+some 1 1; most 0 0; entails all some; entails all most; most 0 0
+all 0 0; all 1 1; all 0 0; entails not_all not_all
+some 0 0; all 1 1; most 0 0; entails none none; entails most most
+all 0 0; most 1 1; entails all some; some 0 0
+entails all some; most 0 0; entails none not_all; some 0 0; some 1 1
+most 0 0; some 0 0; all 0 0; most 0 0; entails not_all not_all
+entails all most; some 1 1; entails all some; some 1 1
+entails none none; most 1 1; entails all some; most 0 0; entails none none
+most 1 1; most 0 0; most 1 1; entails not_all not_all
+entails most most; all 1 1; entails none none; entails not_all not_all; entails all most
+entails none not_all; most 0 0; entails not_all not_all
+entails all some; entails all some; all 0 0; entails none not_all
+most 1 1; entails all some
+entails all some; entails all most; entails all some
+entails not_all not_all; entails none none; all 1 1; most 1 1; all 1 1
+most 0 0; entails none none; all 1 1; entails none not_all; entails all some
+entails all most; all 1 1; entails none none; entails not_all not_all; all 0 0
+most 1 1; entails all most; most 0 0
+entails none not_all; entails all most; entails none none; entails not_all not_all
+some 0 0; most 1 1; entails all some; all 1 1; all 0 0
+some 0 0; entails not_all not_all; all 1 1; entails none not_all
+most 1 1; entails not_all not_all; entails all some; entails most most
+entails most most; some 1 1; most 1 1
+entails none not_all; some 1 1; entails not_all not_all; entails most most; entails none not_all
+entails all most; some 1 1; most 1 1; entails most most; some 1 1
+entails all some; all 0 0
+entails none not_all; all 0 0; some 0 0; most 0 0
+some 0 0; entails all most; entails all most
+entails none none; most 1 1; some 0 0; all 1 1
+entails none none; entails none none; entails all most; entails not_all not_all
+all 1 1; entails none not_all; entails not_all not_all; most 1 1
+entails not_all not_all; entails not_all not_all; all 0 0; entails none none
+entails all some; most 0 0; some 0 0
+entails all most; all 0 0; most 0 0; entails most most; all 1 1
+entails all some; most 1 1; entails all most; entails not_all not_all; entails not_all not_all
+most 1 1; entails none none; entails most most; most 0 0; entails none not_all
+some 1 1; all 0 0; entails most most
+entails most most; entails not_all not_all; entails all some
+entails none not_all; entails not_all not_all; some 0 0; entails none none; entails not_all not_all
+entails none not_all; entails none not_all; some 1 1; most 1 1; entails all most
+entails most most; all 0 0; all 0 0; some 1 1; entails none not_all
+entails all some; some 1 1; most 1 1; entails all most; some 0 0
+entails most most; entails none none; entails none none; entails none none; some 0 0
+all 1 1; entails none none; most 1 1; entails not_all not_all; some 1 1
+all 1 1; entails most most; entails all most
+entails not_all not_all; entails none none; most 1 1
+most 0 0; entails all most; entails all some; entails none not_all
+entails most most; most 1 1; entails not_all not_all; some 0 0
+some 0 0; all 1 1; entails all some; entails none not_all; all 0 0
+entails none not_all; entails not_all not_all; most 1 1; some 0 0
+some 1 1; all 1 1; entails not_all not_all; entails not_all not_all; some 1 1
+some 0 0; entails most most; most 0 0; entails none not_all
+entails not_all not_all; entails all most; entails not_all not_all; entails not_all not_all
+all 0 0; entails none none; entails most most; entails all most; all 1 1
+entails none none; most 0 0
+entails none not_all; most 1 1; entails not_all not_all; entails most most
+entails none none; entails most most; all 0 0; most 0 0; entails most most
+most 0 0; all 0 0; entails not_all not_all; some 0 0; most 1 1
+entails most most; all 0 0; most 1 1; entails none none; entails not_all not_all
+entails none none; entails all some; entails none not_all
+entails all most; entails none not_all; some 1 1; entails all most
+entails none not_all; all 1 1; entails not_all not_all; entails none not_all; entails all some
+entails not_all not_all; some 0 0; entails none none; all 0 0; all 1 1
+all 1 1; some 0 0; entails none not_all; entails none none
+entails none not_all; entails all some
+entails all most; most 0 0; entails all most; entails all most
+entails not_all not_all; most 0 0; some 0 0; some 0 0
+entails all some; entails not_all not_all; entails all some; entails none not_all
+all 1 1; most 0 0; entails none none
+entails all some; most 0 0; entails none none; entails most most
+entails all some; entails most most; most 0 0; entails most most
+some 1 1; all 0 0; some 1 1
