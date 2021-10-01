@@ -19,7 +19,7 @@ log.setLevel(logging.INFO)
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--n_docs", type=int, default=1000)
+    parser.add_argument("-n", "--n_docs", type=int, default=10000)
     parser.add_argument("--doc_len", type=int, default=5)
     parser.add_argument("--n_items", type=int, default=5)
     parser.add_argument("--n_predicates", type=int, default=2)
@@ -49,7 +49,7 @@ def main(args):
         belief_state[randint(0, len(worlds) - 1)] = 1
         document = agent.sample_monologue(belief_state, length=args.doc_len, update_prior=not args.no_updates)
         sentences = [" ".join(str(x) for x in sent) for sent in document if sent]
-        serialized = "; ".join(sent for sent in sentences)
+        serialized = " ; ".join(sent for sent in sentences)
         print(serialized)
 
 

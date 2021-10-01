@@ -9,7 +9,7 @@ from src.rational_speech import RationalSpeechActs
 
 class OnlyTrueAgent:
 
-    """Randomly say a true thing."""
+    """Randomly say a true sentence."""
 
     def __init__(self, rsa: RationalSpeechActs):
         self.rsa = rsa
