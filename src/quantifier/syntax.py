@@ -22,7 +22,8 @@ class QuantifierSyntax:
         entail_sents = [["entails", q1, q2] for q1 in self.quantifiers for q2 in self.quantifiers]
         random.shuffle(entail_sents)
         for idx, sent in enumerate(entail_sents):
-            if train and idx % 2 == 0:
-                yield sent
-            elif not train and idx % 2 == 1:
-                yield sent
+            for val in [True, False]:
+                if train and idx % 2 == 0:
+                    yield sent + [val]
+                elif not train and idx % 2 == 1:
+                    yield sent + [val]

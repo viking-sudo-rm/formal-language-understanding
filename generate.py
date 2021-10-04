@@ -1,7 +1,7 @@
 """Generate FOL language, then generate documents using RSA."""
 
 from argparse import ArgumentParser
-from tqdm import trange
+import tqdm
 import logging
 import torch
 import random
@@ -37,24 +37,32 @@ def main(args):
     random.seed(args.seed)
     torch.manual_seed(args.seed)
 
+    # Set up the model for the world and language's syntax and semantics.
     worlds = list(QuantifierWorld.generate_all(args.n_items, args.n_predicates))
     syntax = QuantifierSyntax(args.n_predicates)
     semantics = QuantifierSemantics(worlds)
-
     utterances = list(syntax.generate(train=not args.test))
-    truth_values = torch.tensor([[semantics.evaluate(e, w) for w in worlds] for e in utterances])
-    costs = torch.tensor([args.cost * len(u) for u in utterances])
-    belief_state = torch.zeros(len(worlds))
 
-    rsa = RationalSpeechActs(utterances, truth_values, costs)
-    agent = RationalAgent(rsa, temp=args.temp) if not args.only_true else OnlyTrueAgent(rsa)
-
-    for _ in trange(args.n_docs):
-        belief_state[random.randint(0, len(worlds) - 1)] = 1
-        document = agent.sample_monologue(belief_state, length=args.doc_len, update_prior=not args.no_updates)
-        sentences = [" ".join(str(x) for x in sent) for sent in document if sent]
-        serialized = " ; ".join(sent for sent in sentences)
-        print(serialized)
+    if not args.test:
+        # Generate a language modeling corpus to train on.
+        truth_values = torch.tensor([[semantics.evaluate(e, w) for w in worlds] for e in utterances])
+        costs = torch.tensor([args.cost * len(u) for u in utterances])
+        rsa = RationalSpeechActs(utterances, truth_values, costs)
+        agent = RationalAgent(rsa, temp=args.temp) if not args.only_true else OnlyTrueAgent(rsa)
+        for _ in tqdm.trange(args.n_docs):
+            belief_state = torch.zeros(len(worlds))
+            belief_state[random.randint(0, len(worlds) - 1)] = 1
+            document = agent.sample_monologue(belief_state, length=args.doc_len, update_prior=not args.no_updates)
+            sentences = [" ".join(str(x) for x in sent) for sent in document if sent]
+            serialized = " ; ".join(sent for sent in sentences)
+            print(serialized)
+    
+    else:
+        # Generate a semantic evaluation suite.
+        for utterance in tqdm.tqdm(utterances):
+            sentence = " ".join(str(x) for x in utterance)
+            value = semantics.evaluate(utterance, None)
+            print(f"{sentence}\t{value}")
 
 
 if __name__ == "__main__":

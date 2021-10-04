@@ -1,4 +1,8 @@
+# Python stuff.
 *.dat
 *.pyc
 __pycache__/
+
+# Project-specific stuff.
 data/
+models/

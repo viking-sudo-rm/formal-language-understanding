@@ -1,23 +1,25 @@
+// Adapted from https://github.com/allenai/allennlp-models/blob/main/training_config/lm/bidirectional_language_model.jsonnet
+
+local TRAIN = std.extVar("TRAIN");
+local CUDA = std.parseInt(std.extVar("CUDA"));
+
 local NUM_GPUS = 1;
 local NUM_GRAD_ACC = 4;
 local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
 
+local D_MODEL = 216;
+local D_FF = 256;
+local N_LAYERS = 3;
+
 local BASE_READER = {
         "type": "simple_language_modeling",
         "tokenizer": {
-	        // The 1 Billion Word Language Model Benchmark dataset is
-	        // pre-tokenized. (Also, if you're running against a untokenized
-	        // dataset be aware that there are serialization issues with Spacy.
-	        // These come into play in the multiprocess case.)
           "type": "just_spaces"
         },
         "token_indexers": {
           "tokens": {
             "type": "single_id"
           },
-        //   "token_characters": {
-        //     "type": "elmo_characters"
-        //   }
         },
         "max_sequence_length": 400,
         "start_tokens": ["<S>"],
@@ -33,15 +35,12 @@ local BASE_LOADER = {
 };
 
 {
-  "dataset_reader": {
-    "type": "sharded",
-    "base_reader": BASE_READER,
-  },
+  "dataset_reader": BASE_READER,
   // Note: We don't set a validation_data_path because the softmax is only
   // sampled during training. Not sampling on GPUs results in a certain OOM
   // given our large vocabulary. We'll need to evaluate against the test set
   // (when we'll want a full softmax) with the CPU.
-  "train_data_path": std.extVar("TRAIN"),
+  "train_data_path": TRAIN,
 
 //   "vocabulary": {
 //       // Use a prespecified vocabulary for efficiency.
@@ -57,39 +56,14 @@ local BASE_LOADER = {
   "model": {
     "type": "language_model",
     "bidirectional": true,
-    "num_samples": 8192,
+    // "num_samples": 8192,  # In our case, the vocabulary is very small.
     # Sparse embeddings don't work with DistributedDataParallel.
     "sparse_embeddings": false,
     "text_field_embedder": {
       "token_embedders": {
         "tokens": {
-          "type": "empty"
-        },
-        "token_characters": {
-            "type": "character_encoding",
-            "embedding": {
-                "num_embeddings": 262,
-                // Same as the Transformer ELMo in Calypso. Matt reports that
-                // this matches the original LSTM ELMo as well.
-                "embedding_dim": 16
-            },
-            "encoder": {
-                "type": "cnn-highway",
-                "activation": "relu",
-                "embedding_dim": 16,
-                "filters": [
-                    [1, 32],
-                    [2, 32],
-                    [3, 64],
-                    [4, 128],
-                    [5, 256],
-                    [6, 512],
-                    [7, 1024]],
-                "num_highway": 2,
-                "projection_dim": 512,
-                "projection_location": "after_highway",
-                "do_layer_norm": true
-            }
+          "type": "embedding",
+          "embedding_dim": D_MODEL
         }
       }
     },
@@ -99,17 +73,17 @@ local BASE_LOADER = {
     "dropout": 0.1,
     "contextualizer": {
         "type": "bidirectional_language_model_transformer",
-        "input_dim": 512,
-        "hidden_dim": 2048,
-        "num_layers": 6,
+        "input_dim": D_MODEL,
+        "hidden_dim": D_FF,
+        "num_layers": N_LAYERS,
         "dropout": 0.1,
         "input_dropout": 0.1
     }
   },
   "data_loader": BASE_LOADER,
-  "distributed": {
-    "cuda_devices": if NUM_GPUS > 1 then std.range(0, NUM_GPUS - 1) else 0,
-  },
+  // "distributed": {
+  //   "cuda_devices": if NUM_GPUS > 1 then std.range(0, NUM_GPUS - 1) else 0,
+  // },
   "trainer": {
     "num_epochs": 10,
     "optimizer": {
@@ -129,6 +103,7 @@ local BASE_LOADER = {
       "warmup_steps": 6000
     },
     "num_gradient_accumulation_steps": NUM_GRAD_ACC,
-    "use_amp": true
+    // "use_amp": true,
+    "device": CUDA
   }
 }

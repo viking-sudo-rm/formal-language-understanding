@@ -62,9 +62,10 @@ class QuantifierSemantics:
     def evaluate(self, prop: Proposition, world: QuantifierWorld) -> bool:
         if not prop:
             return True
+        if prop[0] == "entails":
+            _, q1, q2, val = prop
+            return self.entails(q1, q2) == val
         quant, p1, p2 = prop
-        if quant == "entails":
-            return self.entails(p1, p2)
         mu, tot = world.measure(p1, p2)
         quant_fn = self.quantifiers[quant]
         return quant_fn(mu, tot)
@@ -78,3 +79,7 @@ class QuantifierSemantics:
                     if self.quantifiers[q1](mu, tot) and not self.quantifiers[q2](mu, tot):
                         return False
         return True
+
+    def get_mask_idx(self, expr: Proposition) -> int:
+        assert expr[0] == "entails"
+        return 2
