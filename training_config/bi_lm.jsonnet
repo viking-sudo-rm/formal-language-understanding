@@ -6,6 +6,7 @@ local CUDA = std.parseInt(std.extVar("CUDA"));
 local NUM_GPUS = 1;
 local NUM_GRAD_ACC = 4;
 local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
+local N_EPOCHS = 3;
 
 local D_MODEL = 216;
 local D_FF = 256;
@@ -85,7 +86,7 @@ local BASE_LOADER = {
   //   "cuda_devices": if NUM_GPUS > 1 then std.range(0, NUM_GPUS - 1) else 0,
   // },
   "trainer": {
-    "num_epochs": 10,
+    "num_epochs": N_EPOCHS,
     "optimizer": {
       // The gradient accumulators in Adam for the running stdev and mean for
       // words not used in the sampled softmax would be decayed to zero with the

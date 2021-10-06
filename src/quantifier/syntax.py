@@ -11,19 +11,33 @@ class QuantifierSyntax:
     def __init__(self, n_predicates: int):
         self.n_predicates = n_predicates
     
-    def generate(self, train: bool = True) -> Iterator[List[Union[str, int]]]:
-        if train:
-            yield []
-            for quant in self.quantifiers:
-                for p1 in range(self.n_predicates):
-                    for p2 in range(self.n_predicates):
-                        yield [quant, p1, p2]
-
-        entail_sents = [["entails", q1, q2] for q1 in self.quantifiers for q2 in self.quantifiers]
+    def generate(self) -> Iterator[List[Union[str, int]]]:
+        yield []
+        for quant in self.quantifiers:
+            for p1 in range(self.n_predicates):
+                for p2 in range(self.n_predicates):
+                    yield [quant, p1, p2]
+    
+    def generate_entails(self):
+        entail_sents = [["entails", s1, s2] for s1 in self.generate() for s2 in self.generate() if s1 and s2]
         random.shuffle(entail_sents)
-        for idx, sent in enumerate(entail_sents):
+        for sent in entail_sents:
             for val in [True, False]:
-                if train and idx % 2 == 0:
-                    yield sent + [val]
-                elif not train and idx % 2 == 1:
-                    yield sent + [val]
+                yield sent + [val]
+
+
+class SimpleQuantifierSyntax:
+
+    quantifiers = ["some", "most", "all", "none", "not_most", "not_all"]
+    
+    def generate(self) -> Iterator[List[Union[str, int]]]:
+        yield []
+        for q in self.quantifiers:
+            yield [q]
+    
+    def generate_entails(self):
+        entail_sents = [["entails", s1, s2] for s1 in self.generate() for s2 in self.generate() if s1 and s2]
+        random.shuffle(entail_sents)
+        for sent in entail_sents:
+            for val in [True, False]:
+                yield sent + [val]
