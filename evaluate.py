@@ -15,8 +15,8 @@ from allennlp_models.lm.dataset_readers import *
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--model", "-M", action="append")
-    parser.add_argument("--eval_path", type=str, default="data/eval.tsv")
+    parser.add_argument("--model_dir", type=str, default="models/quantifier/")
+    parser.add_argument("--eval_path", type=str, default="data/quantifier/eval.tsv")
     parser.add_argument("--false_only", action="store_true")
     return parser.parse_args()
 
@@ -68,7 +68,8 @@ def split(data):
 
 
 args = parse_args()
-predictors = [get_predictor(model) for model in args.model]
+models = [model_name for model_name in os.listdir(args.model_dir) if os.path.isdir(os.path.join(args.model_dir, model_name))]
+predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
 sents1, sents2, labels = get_data(args.eval_path)
 accs = defaultdict(list)
 
@@ -77,8 +78,9 @@ for _ in range(20):
     train_sents1, test_sents1 = split(sents1)
     train_sents2, test_sents2 = split(sents2)
     train_labels, test_labels = split(labels)
-    for model_name in args.model:
-        predictor = get_predictor(model_name)
+    for model_name in models:
+        model_path = os.path.join(args.model_dir, model_name)
+        predictor = get_predictor(model_path)
         train_features = featurize(train_sents1, train_sents2, predictor)
         test_features = featurize(test_sents1, test_sents2, predictor)
         clf = LogisticRegression().fit(train_features, train_labels)

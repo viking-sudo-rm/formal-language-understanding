@@ -22,6 +22,7 @@ log.setLevel(logging.INFO)
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("agent", type=str, choices=["true", "rsa", "eval"], help="Agent model to use, or train/test for eval dataset.")
+    parser.add_argument("--task", type=str, choices=["quantifier", "arithmetic"])
     parser.add_argument("-n", "--n_docs", type=int, default=10000, help="Number of total documents (training examples) to sample.")
     parser.add_argument("--n_sents", type=int, default=10, help="Number of sentences per document.")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
@@ -39,9 +40,14 @@ def main(args):
     torch.manual_seed(args.seed)
 
     # Set up the model for the world and language's syntax and semantics.
-    syntax = SimpleQuantifierSyntax()
-    worlds = list(QuantifierWorld.generate_all(args.n_items, 1))
-    semantics = SimpleQuantifierSemantics(worlds)
+    if args.task == "quantifier":
+        syntax = SimpleQuantifierSyntax()
+        worlds = list(QuantifierWorld.generate_all(args.n_items, 1))
+        semantics = SimpleQuantifierSemantics(worlds)
+    elif args.task == "arithmetic":
+        pass
+    else:
+        raise NotImplementedError(f"Unknown task: {args.task}.")
     utterances = list(syntax.generate())
 
     if args.agent in ["true", "rsa"]:
