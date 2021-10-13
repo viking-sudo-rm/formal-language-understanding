@@ -1,4 +1,4 @@
-from typing import List, Iterator, Union, Set, Tuple
+from typing import List, Iterator, Union, Set, Tuple, NamedTuple
 from itertools import product
 from functools import lru_cache
 
@@ -82,6 +82,16 @@ class QuantifierSemantics:
         return 2
 
 
+class SimpleQuantifierWorld(NamedTuple):
+    mu: int
+    tot: int
+
+    @classmethod
+    def generate_all(cls, n_total: int) -> Iterator["SimpleQuantifierWorld"]:
+        for mu in range(n_total + 1):
+            yield cls(mu, n_total)
+
+
 class SimpleQuantifierSemantics:
 
     quantifiers = {
@@ -96,10 +106,10 @@ class SimpleQuantifierSemantics:
     def __init__(self, worlds):
         self.worlds = worlds
 
-    def evaluate(self, prop: Proposition, world: QuantifierWorld) -> bool:
+    def evaluate(self, prop: Proposition, world: SimpleQuantifierWorld) -> bool:
         if not prop:
             return True
-        mu, tot = world.measure(0, 0)
+        mu, tot = world
         quant, = prop
         quant_fn = self.quantifiers[quant]
         return quant_fn(mu, tot)

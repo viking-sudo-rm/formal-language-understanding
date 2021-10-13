@@ -8,7 +8,7 @@ import random
 from itertools import product
 
 from src.quantifier.syntax import SimpleQuantifierSyntax
-from src.quantifier.semantics import SimpleQuantifierSemantics, QuantifierWorld
+from src.quantifier.semantics import SimpleQuantifierSemantics, SimpleQuantifierWorld
 from src.quantifier.serialize import to_string
 from src.rational_speech import RationalAgent, RationalSpeechActs
 from src.only_true_speech import OnlyTrueAgent
@@ -22,14 +22,14 @@ log.setLevel(logging.INFO)
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("agent", type=str, choices=["true", "rsa", "eval"], help="Agent model to use, or train/test for eval dataset.")
-    parser.add_argument("--task", type=str, choices=["quantifier", "arithmetic"])
+    parser.add_argument("--task", type=str, choices=["quantifier", "arithmetic"], default="quantifier")
     parser.add_argument("-n", "--n_docs", type=int, default=10000, help="Number of total documents (training examples) to sample.")
     parser.add_argument("--n_sents", type=int, default=10, help="Number of sentences per document.")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     # parser.add_argument("--n_predicates", type=int, default=2, help="Number of predicates.")
     parser.add_argument("--temp", type=float, default=1., help="Temperature parameter in RSA model. Controls rationality.")
     parser.add_argument("--cost", type=float, default=1/3, help="Cost per token.")
-    parser.add_argument("--no_updates", action="store_true", help="Don't update speaker belief model.")
+    parser.add_argument("--update_prior", action="store_true", help="Update the speaker belief model.")
     parser.add_argument("--seed", type=int, default=2, help="Fixed random seed for data generation.")
     return parser.parse_args()
 
@@ -42,7 +42,7 @@ def main(args):
     # Set up the model for the world and language's syntax and semantics.
     if args.task == "quantifier":
         syntax = SimpleQuantifierSyntax()
-        worlds = list(QuantifierWorld.generate_all(args.n_items, 1))
+        worlds = list(SimpleQuantifierWorld.generate_all(args.n_items))
         semantics = SimpleQuantifierSemantics(worlds)
     elif args.task == "arithmetic":
         pass
@@ -59,7 +59,7 @@ def main(args):
         for _ in tqdm.trange(args.n_docs):
             belief_state = torch.zeros(len(worlds))
             belief_state[random.randint(0, len(worlds) - 1)] = 1
-            document = agent.sample_monologue(belief_state, length=args.n_sents, update_prior=not args.no_updates)
+            document = agent.sample_monologue(belief_state, length=args.n_sents, update_prior=args.update_prior)
             serialized = " ; ".join(to_string(sent) for sent in document if sent)
             print(serialized)
 
