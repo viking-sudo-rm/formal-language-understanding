@@ -5,7 +5,7 @@ from torch import Tensor
 from torch.distributions import Categorical
 import random
 
-from src.rational_speech import RationalSpeechActs
+from src.old_rational_speech import RationalSpeechActs
 
 class OnlyTrueAgent:
 

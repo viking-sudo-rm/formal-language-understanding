@@ -30,42 +30,60 @@ class TestRationalAgent(TestCase):
         self.rsa = build_dialog(lang, worlds, torch.tensor([1., 1., 1.]))
         self.rsa_costs = build_dialog(lang_costs, worlds, torch.tensor([1., 1., 1., 0.]))
 
-    @torch.no_grad()
-    def test_quantifiers_listen(self):
-        listener = RationalAgent(self.rsa)
-        none_belief, some_belief, all_belief = listener.listen()
-        assert_allclose(none_belief, torch.tensor([1., 0., 0., 0.]))
-        assert_allclose(some_belief, torch.tensor([0., .4, .4, .2]))
-        assert_allclose(all_belief, torch.tensor([0., 0., 0., 1.]))
+    # @torch.no_grad()
+    # def test_quantifiers_listen(self):
+    #     listener = RationalAgent(self.rsa)
+    #     none_belief, some_belief, all_belief = listener.listen()
+    #     assert_allclose(none_belief, torch.tensor([1., 0., 0., 0.]))
+    #     assert_allclose(some_belief, torch.tensor([0., .4, .4, .2]))
+    #     assert_allclose(all_belief, torch.tensor([0., 0., 0., 1.]))
 
     @torch.no_grad()
-    def test_quantifiers_speak_all(self):
-        speaker = RationalAgent(self.rsa)
-        speak_probs = speaker.speak()
+    def test_speak0(self):
+        speaker = RationalAgent(self.rsa, depth=0)
+        _, speak_probs = speaker.get_listen_speak_probs()
+        assert_allclose(speak_probs[:, 0], torch.tensor([1., 0., 0.]))
+        assert_allclose(speak_probs[:, 1], torch.tensor([0., 1., 0.]))
+        assert_allclose(speak_probs[:, 2], torch.tensor([0., 1., 0.]))
+        assert_allclose(speak_probs[:, 3], torch.tensor([0., .5, .5]))
+
+    @torch.no_grad()
+    def test_speak1(self):
+        speaker = RationalAgent(self.rsa, depth=1)
+        _, speak_probs = speaker.get_listen_speak_probs()
         assert_allclose(speak_probs[:, 0], torch.tensor([1., 0., 0.]))
         assert_allclose(speak_probs[:, 1], torch.tensor([0., 1., 0.]))
         assert_allclose(speak_probs[:, 2], torch.tensor([0., 1., 0.]))
         assert_allclose(speak_probs[:, 3], torch.tensor([0., .25, .75]))
 
     @torch.no_grad()
-    def test_sample_monologue_none(self):
-        belief_state = torch.tensor([1., 0., 0., 0.])
-        speaker = RationalAgent(self.rsa_costs, temp=10.)
-        monologue = speaker.sample_monologue(belief_state)
-        self.assertEqual(monologue, ["none", "null", "null", "null", "null"])
+    def test_speak2(self):
+        speaker = RationalAgent(self.rsa, depth=2)
+        _, speak_probs = speaker.get_listen_speak_probs()
+        assert_allclose(speak_probs[:, 0], torch.tensor([1., 0., 0.]))
+        assert_allclose(speak_probs[:, 1], torch.tensor([0., 1., 0.]))
+        assert_allclose(speak_probs[:, 2], torch.tensor([0., 1., 0.]))
+        assert_allclose(speak_probs[:, 3], torch.tensor([0., .16666666, .8333333]))
 
     @torch.no_grad()
-    def test_sample_monologue_all(self):
-        belief_state = torch.tensor([0., 0., 0., 1.])
-        speaker = RationalAgent(self.rsa_costs, temp=10.)
-        monologue = speaker.sample_monologue(belief_state)
-        self.assertEqual(monologue, ["all", "null", "null", "null", "null"])
+    def test_speak2_rational(self):
+        # Using a temperature of 1000 causes errors. Overflow, maybe?
+        speaker = RationalAgent(self.rsa, depth=2, temp=100)
+        _, speak_probs = speaker.get_listen_speak_probs()
+        assert_allclose(speak_probs[:, 0], torch.tensor([1., 0., 0.]))
+        assert_allclose(speak_probs[:, 1], torch.tensor([0., 1., 0.]))
+        assert_allclose(speak_probs[:, 2], torch.tensor([0., 1., 0.]))
+        assert_allclose(speak_probs[:, 3], torch.tensor([0., 0., 1.]))
 
     @torch.no_grad()
-    def test_sample_monologue_some(self):
-        belief_state = torch.tensor([0., 0., 1., 0.])
-        speaker = RationalAgent(self.rsa_costs, temp=.2)
-        monologue = speaker.sample_monologue(belief_state)
-        self.assertEqual(monologue, ["null", "null", "some", "null", "null"])
-
-    # FIXME: Does temp work properly?
+    def test_speak1_rational(self):
+        speaker = RationalAgent(self.rsa, depth=1)
+        listen_probs, speak_probs = speaker.get_listen_speak_probs(context=[2])
+        assert_allclose(listen_probs[0, :], torch.tensor([0., 0., 0., 0.]))
+        assert_allclose(listen_probs[1, :], torch.tensor([0., 0., 0., 1.]))
+        assert_allclose(listen_probs[2, :], torch.tensor([0., 0., 0., 1.]))
+        
+        assert_allclose(speak_probs[:, 0], torch.tensor([0., 0., 0.]))
+        assert_allclose(speak_probs[:, 1], torch.tensor([0., 0., 0.]))
+        assert_allclose(speak_probs[:, 2], torch.tensor([0., 0., 0.]))
+        assert_allclose(speak_probs[:, 3], torch.tensor([0., .5, .5]))

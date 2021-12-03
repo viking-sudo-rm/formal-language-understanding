@@ -31,6 +31,12 @@ def _uniform(num_items):
     return torch.ones(num_items) / num_items
 
 
+def _fix_nans(probs, dim):
+    """If a full row is all NaN, return zeros instead."""
+    zeros = torch.zeros_like(probs)
+    return torch.where(probs.isnan().all(dim=dim, keepdim=True), zeros, probs)
+
+
 class RationalSpeechActs(NamedTuple):
     """Represents data about the dialog used by the RSA model."""
 
@@ -54,140 +60,94 @@ class RationalAgent:
         self,
         rsa: RationalSpeechActs,
         temp: float = 1.0,
+        depth: int = 1,
     ):
         self.rsa = rsa
         self.temp = temp
+        self.depth = depth
 
     def speak_step(self, listen_probs: Tensor) -> Tensor:
         """Represents a speaker step in the RSA recursion.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim1; output over dim0."""
-        utilities = (listen_probs + 1e-6).log()
-        utilities = torch.where(utilities > -INF, utilities, -INF * torch.ones_like(utilities))
-        energies = utilities - self.rsa.costs.unsqueeze(dim=1)
-        return (self.temp * energies).softmax(dim=0)
-    
-    def modal_speak_step(self, listen_probs: Tensor, belief_state: Tensor) -> Tensor:
-        """Represents a final, modalized speaker step in the RSA recursion.
+        # utilities = (listen_probs + 1e-6).log()
+        # utilities = torch.where(utilities > -INF, utilities, -INF * torch.ones_like(utilities))
+        # energies = utilities - self.rsa.costs.unsqueeze(dim=1)
+        # return (self.temp * energies).softmax(dim=0)
+        if self.temp == 1:
+            # Don't take unnecessary powers.
+            scores = listen_probs * torch.exp(-self.rsa.costs.unsqueeze(dim=-1))
+        else:
+            scores = (listen_probs ** self.temp) * torch.exp(-self.rsa.costs.unsqueeze(dim=-1))
 
-        Mathematically, utility here reflects the cross-entropy between the speaker and listener belief states.
-        
-        Returns a distribution (n_utterances,).
-
-        When `belief_state` is one-hot, this reduces to computing `speak_step` and selecting the true world."""
-        utilities = (listen_probs + 1e-6).log()
-        utilities = torch.where(utilities > -INF, utilities, -INF * torch.ones_like(utilities))
-        exp_utilities = (utilities * belief_state.unsqueeze(dim=0)).sum(dim=1)
-        energies = exp_utilities - self.rsa.costs
-        return (self.temp * energies).softmax(dim=0)
+        probs = scores / scores.sum(dim=0, keepdim=True)
+        return _fix_nans(probs, dim=0)
 
     def listen_step(self, speak_probs: Tensor, prior: Tensor) -> Tensor:
         """Represents a listener step in the RSA process.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim0; output over dim1."""
         scores = speak_probs * prior.unsqueeze(dim=0)
-        return scores / scores.sum(dim=1, keepdim=True)
+        probs = scores / scores.sum(dim=1, keepdim=True)
+        return _fix_nans(probs, dim=1)
+
+    def get_listen_speak_probs(
+        self,
+        inferred_belief_state: Optional[Tensor] = None,
+        context: List[int] = None,
+    ) -> Tensor:
+        """Return a conditional distribution over utterances to produce in every world.
+
+        If context is provided, the prior is taken to be what the deepest RSA listener would have inferred from
+        that context.
+
+        Returns: listen_probs, speak_probs; a pair of (n_utterances, n_worlds)"""
+        if context:
+            # The context-dependent case, where the prior is informed by linguistic context.
+            word = context[-1]
+            full_prior, _ = self.get_listen_speak_probs(inferred_belief_state, context[:-1])
+            prior = full_prior[word, :]
+        elif inferred_belief_state is not None:
+            # The case where a prior is provided, and there is no context to condition on.
+            prior = inferred_belief_state
+        else:
+            # The case where no prior is provided, so we use the uniform distribution over worlds.
+            prior = (
+                _uniform(self.rsa.num_worlds)
+                if inferred_belief_state is None
+                else inferred_belief_state
+            )
+
+        if self.depth % 2 == 0:
+            # A speaker-first RSA model under our indexing scheme.
+            listen_probs = self.rsa.truth_values
+            for _ in range(self.depth // 2 + 1):
+                old_listen_probs = listen_probs
+                speak_probs = self.speak_step(listen_probs)
+                listen_probs = self.listen_step(speak_probs, prior)
+            listen_probs = old_listen_probs
+
+        else:
+            # A listener-first RSA model under our indexing scheme.
+            speak_probs = self.rsa.truth_values
+            for _ in range(self.depth // 2 + 1):
+                listen_probs = self.listen_step(speak_probs, prior)
+                speak_probs = self.speak_step(listen_probs)
+
+        return listen_probs, speak_probs
 
     def speak(
         self,
+        world: int,
         inferred_belief_state: Optional[Tensor] = None,
-    ) -> Tensor:
-        """Return a conditional distribution over utterances to produce in every world.
-        
-        Returns: (n_utterances, n_worlds)"""
-        inferred_belief_state = (
-            _uniform(self.rsa.num_worlds)
-            if inferred_belief_state is None
-            else inferred_belief_state
-        )
-        scores = self.rsa.truth_values
-        speak_probs = scores / scores.sum(dim=1, keepdim=True)
-        listen_probs = self.listen_step(speak_probs, inferred_belief_state)      
-        return self.speak_step(listen_probs)
-
-    def modal_speak(
-        self,
-        belief_state: Tensor,
-        inferred_belief_state: Optional[Tensor] = None,
-    ) -> Tensor:
-        """Return a conditional distribution over utterances to produce in order to maximize expected utility.
-        
-        Returns: (n_utterances,)"""
-        belief_state = (
-            _uniform(self.rsa.num_worlds) if belief_state is None else belief_state
-        )
-        inferred_belief_state = (
-            _uniform(self.rsa.num_worlds)
-            if inferred_belief_state is None
-            else inferred_belief_state
-        )
-        scores = self.rsa.truth_values
-        speak_probs = scores / scores.sum(dim=1, keepdim=True)
-        listen_probs = self.listen_step(speak_probs, inferred_belief_state)      
-        return self.modal_speak_step(listen_probs, belief_state)
-
-    def listen(
-        self,
-        belief_state: Optional[Tensor] = None,
-    ) -> Tensor:
-        """Return a conditional distribution over inferred world states."""
-        belief_state = (
-            _uniform(self.rsa.num_worlds) if belief_state is None else belief_state
-        )
-        scores = self.rsa.truth_values * belief_state.unsqueeze(dim=0)
-        listen_probs = scores / scores.sum(dim=0, keepdim=True)
-        speak_probs = self.speak_step(listen_probs)
-        return self.listen_step(speak_probs, belief_state)
-
-    @listify
-    def sample_monologue(
-        self,
-        speaker_belief_state: Tensor,
-        listener_belief_state: Optional[Tensor] = None,  # Inferred by the speaker.
-        length: int = 5,
-        update_prior: bool = True,
-    ) -> List[str]:
-        """Generate a monologue from `self.speaker` attempting to convey their belief state."""
-        listener_belief_state = (
-            _uniform(self.rsa.num_worlds)
-            if listener_belief_state is None
-            else listener_belief_state
-        )
-        for _ in range(length):
-            # Sample an utterance from the speaker model.
-            utter_probs = self.modal_speak(speaker_belief_state, listener_belief_state)
-            utter_idx = Categorical(utter_probs).sample()
-            yield self.rsa.utterances[utter_idx]
-
-            # Update the listener belief based on the utterance.
-            if update_prior:
-                listen_probs = self.listen(listener_belief_state)
-                listener_belief_state = listen_probs[utter_idx, :]
-
-    # TODO: What's the right way to model a back-and-forth dialog?
-    # @listify
-    # def sample_dialog(
-    #     self,
-    #     state0: Tensor,
-    #     state1: Tensor,
-    #     length: int = 5,
-    # ) -> List[Tuple[int, str]]:
-    #     """Simulate a dialog where each person tries to infer each other's state, but their beliefs don't change.
-
-    #     Each participant starts off assuming the other shares their beliefs.
-    #     """
-    #     inferred_state0 = _uniform(self.dialog.num_worlds)  # state1
-    #     inferred_state1 = _uniform(self.dialog.num_worlds)  # state0
-    #     for _ in range(length):
-    #         speak_probs = self.speak(state0, inferred_state1)
-    #         breakpoint()
-    #         utter_idx = _sample_utterance(speak_probs, state0)
-    #         yield 0, self.dialog.utterances[utter_idx]
-    #         listen_probs = self.listen(state1, inferred_state0)
-    #         inferred_state0 = listen_probs[utter_idx, :]
-
-    #         speak_probs = self.speak(state1, inferred_state0)
-    #         utter_idx = _sample_utterance(speak_probs, state1)
-    #         yield 1, self.dialog.utterances[utter_idx]
-    #         listen_probs = self.listen(state0, inferred_state1)
-    #         inferred_state1 = listen_probs[utter_idx, :]
+        context: List[str] = None,
+    ):
+        """Sample an utterance, potentially conditioned on one sentence of preceding context."""
+        if context:
+            context_idxs = [self.rsa.utterances.index(c) for c in context]
+        else:
+            context_idxs = None
+        speak_probs = self.get_listen_speak_probs(inferred_belief_state, context_idxs)
+        dist = Categorical(speak_probs[:, world])
+        utter_idx = dist.sample()
+        return self.rsa.utterances[utter_idx]

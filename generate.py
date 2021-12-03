@@ -10,7 +10,7 @@ from itertools import product
 from src.quantifier.syntax import SimpleQuantifierSyntax
 from src.quantifier.semantics import SimpleQuantifierSemantics, SimpleQuantifierWorld
 from src.quantifier.serialize import to_string
-from src.rational_speech import RationalAgent, RationalSpeechActs
+from src.old_rational_speech import RationalAgent, RationalSpeechActs
 from src.only_true_speech import OnlyTrueAgent
 
 
