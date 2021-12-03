@@ -63,11 +63,13 @@ class RationalAgent:
         temp: float = 1.0,
         depth: int = 1,
         noisy: bool = False,
+        conditional_independence: bool = False,
     ):
         self.rsa = rsa
         self.temp = temp
         self.depth = depth
         self.noisy = noisy
+        self.conditional_independence = conditional_independence
 
     def speak_step(self, listen_probs: Tensor) -> Tensor:
         """Represents a speaker step in the RSA recursion.
@@ -105,7 +107,7 @@ class RationalAgent:
         that context.
 
         Returns: listen_probs, speak_probs; a pair of (n_utterances, n_worlds)"""
-        if context:
+        if not self.conditional_independence and context:
             # The context-dependent case, where the prior is informed by linguistic context.
             word = context[-1]
             full_prior, _ = self.get_listen_speak_probs(inferred_belief_state, context[:-1])
