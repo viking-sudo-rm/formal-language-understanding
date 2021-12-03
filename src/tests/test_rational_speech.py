@@ -8,7 +8,8 @@ from src.rational_speech import RationalAgent, RationalSpeechActs
 def build_dialog(lang, worlds, costs):
     utterances = list(lang.keys())
     truth_values = torch.tensor([[lang[u](w) for w in worlds] for u in utterances])
-    return RationalSpeechActs(utterances, truth_values, costs)
+    errors = torch.tensor([.1, .2, .3])
+    return RationalSpeechActs(utterances, truth_values, costs, errors)
 
 
 class TestRationalAgent(TestCase):
@@ -87,3 +88,12 @@ class TestRationalAgent(TestCase):
         assert_allclose(speak_probs[:, 1], torch.tensor([0., 0., 0.]))
         assert_allclose(speak_probs[:, 2], torch.tensor([0., 0., 0.]))
         assert_allclose(speak_probs[:, 3], torch.tensor([0., .5, .5]))
+
+    @torch.no_grad()
+    def test_speak1_noisy(self):
+        speaker = RationalAgent(self.rsa, noisy=True)
+        listen_probs, speak_probs = speaker.get_listen_speak_probs(context=[2])        
+        assert_allclose(speak_probs[:, 0], torch.tensor([.7960, .0643, .1397]))
+        assert_allclose(speak_probs[:, 1], torch.tensor([.1822, .5301, .2877]))
+        assert_allclose(speak_probs[:, 2], torch.tensor([.1822, .5301, .2877]))
+        assert_allclose(speak_probs[:, 3], torch.tensor([.1317, .3831, .4852]))

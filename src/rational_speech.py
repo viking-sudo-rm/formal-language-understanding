@@ -43,6 +43,7 @@ class RationalSpeechActs(NamedTuple):
     utterances: List[Any]
     truth_values: Tensor
     costs: Tensor
+    errors: Optional[Tensor] = None
 
     @property
     def num_utterances(self):
@@ -61,10 +62,12 @@ class RationalAgent:
         rsa: RationalSpeechActs,
         temp: float = 1.0,
         depth: int = 1,
+        noisy: bool = False,
     ):
         self.rsa = rsa
         self.temp = temp
         self.depth = depth
+        self.noisy = noisy
 
     def speak_step(self, listen_probs: Tensor) -> Tensor:
         """Represents a speaker step in the RSA recursion.
@@ -118,9 +121,15 @@ class RationalAgent:
                 else inferred_belief_state
             )
 
+        if self.noisy:
+            errors = self.rsa.errors.unsqueeze(dim=-1) if len(self.rsa.shape) == 1 else self.rsa.errors
+            meanings = self.rsa.truth_values * (1 - errors) + ~self.rsa.truth_values * errors
+        else:
+            meanings = self.rsa.truth_values
+
         if self.depth % 2 == 0:
             # A speaker-first RSA model under our indexing scheme.
-            listen_probs = self.rsa.truth_values
+            listen_probs = meanings
             for _ in range(self.depth // 2 + 1):
                 old_listen_probs = listen_probs
                 speak_probs = self.speak_step(listen_probs)
@@ -129,7 +138,7 @@ class RationalAgent:
 
         else:
             # A listener-first RSA model under our indexing scheme.
-            speak_probs = self.rsa.truth_values
+            speak_probs = meanings
             for _ in range(self.depth // 2 + 1):
                 listen_probs = self.listen_step(speak_probs, prior)
                 speak_probs = self.speak_step(listen_probs)
