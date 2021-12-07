@@ -158,7 +158,7 @@ class RationalAgent:
             context_idxs = [self.rsa.utterances.index(c) for c in context]
         else:
             context_idxs = None
-        speak_probs = self.get_listen_speak_probs(inferred_belief_state, context_idxs)
+        _, speak_probs = self.get_listen_speak_probs(inferred_belief_state, context_idxs)
         dist = Categorical(speak_probs[:, world])
         utter_idx = dist.sample()
         return self.rsa.utterances[utter_idx]

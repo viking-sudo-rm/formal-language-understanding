@@ -11,14 +11,15 @@ pip install allennlp allennlp_models
 To generate training data:
 ```shell
 mkdir data data/quantifier
-python generate.py true > data/quantifier/true.txt
-python generate.py rsa > data/quantifier/rsa.txt
-python generate.py eval > data/quantifier/eval.tsv
+python generate.py > data/quantifier/rsa1.txt
+python generate.py --depth=0 > data/quantifier/rsa0.txt
+python generate.py --noisy > data/quantifier/rsa1-noisy.txt
+python generate.py --dependent > data/quantifier/rsa1-dep.txt
+python generate.py --dependent --depth=0 > data/quantifier/rsa0-dep.txt
 ```
 
-The following command will train and save models:
+The following command shows how to train and save models:
 ```shell
 mkdir models models/quantifier
-CUDA=0 TRAIN=data/quantifier/true.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/true
-CUDA=1 TRAIN=data/quantifier/rsa.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa
+CUDA=0 TRAIN=data/quantifier/rsa1.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1.txt
 ```
