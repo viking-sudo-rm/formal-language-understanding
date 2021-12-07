@@ -6,3 +6,4 @@ __pycache__/
 # Project-specific stuff.
 data/
 models/
+.vscode/
