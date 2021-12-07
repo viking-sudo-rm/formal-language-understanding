@@ -124,7 +124,7 @@ class RationalAgent:
             )
 
         if self.noisy:
-            errors = self.rsa.errors.unsqueeze(dim=-1) if len(self.rsa.shape) == 1 else self.rsa.errors
+            errors = self.rsa.errors.unsqueeze(dim=-1) if len(self.rsa.errors.shape) == 1 else self.rsa.errors
             meanings = self.rsa.truth_values * (1 - errors) + ~self.rsa.truth_values * errors
         else:
             meanings = self.rsa.truth_values

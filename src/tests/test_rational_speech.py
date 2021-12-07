@@ -92,8 +92,9 @@ class TestRationalAgent(TestCase):
     @torch.no_grad()
     def test_speak1_noisy(self):
         speaker = RationalAgent(self.rsa, noisy=True)
-        listen_probs, speak_probs = speaker.get_listen_speak_probs(context=[2])        
-        assert_allclose(speak_probs[:, 0], torch.tensor([.7960, .0643, .1397]))
-        assert_allclose(speak_probs[:, 1], torch.tensor([.1822, .5301, .2877]))
-        assert_allclose(speak_probs[:, 2], torch.tensor([.1822, .5301, .2877]))
-        assert_allclose(speak_probs[:, 3], torch.tensor([.1317, .3831, .4852]))
+        listen_probs, speak_probs = speaker.get_listen_speak_probs(context=[2])
+        args = {"rtol": 1e-3, "atol": 1e-3}  
+        assert_allclose(speak_probs[:, 0], torch.tensor([.7960, .0643, .1397]), **args)
+        assert_allclose(speak_probs[:, 1], torch.tensor([.1822, .5301, .2877]), **args)
+        assert_allclose(speak_probs[:, 2], torch.tensor([.1822, .5301, .2877]), **args)
+        assert_allclose(speak_probs[:, 3], torch.tensor([.1317, .3831, .4852]), **args)
