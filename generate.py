@@ -66,12 +66,22 @@ def main(args):
     errors = torch.tensor([.1 for _ in utterances])
     rsa = RationalSpeechActs(utterances, truth_values, costs, errors)
     agent = RationalAgent(rsa, temp=args.temp, depth=args.depth, noisy=args.noisy, conditional_independence=not args.dependent)
+
+    # for _ in tqdm.trange(args.n_docs):
+    #     world = random.randint(0, len(worlds) - 1)
+    #     sent1 = agent.speak(world)
+    #     sent2 = agent.speak(world, context=[sent1])
+    #     doc = sent1 + sent2
+    #     serialized = " ".join(x for x in doc if x)
+    #     print(serialized)
+
     for _ in tqdm.trange(args.n_docs):
         world = random.randint(0, len(worlds) - 1)
-        sent1 = agent.speak(world)
-        sent2 = agent.speak(world, context=[sent1])
-        doc = sent1 + sent2
-        serialized = " ".join(x for x in doc if x)
+        context = []
+        for _ in range(args.n_sents):
+            sent = agent.speak(world)
+            context = context + sent
+        serialized = " ".join(x for x in context if x)
         print(serialized)
 
 
