@@ -41,3 +41,27 @@ class SimpleQuantifierSyntax:
         for sent in entail_sents:
             for val in [True, False]:
                 yield sent + [val]
+
+    @staticmethod
+    def get_cost(prop):
+        return len(prop)
+
+    @staticmethod
+    def is_empty(prop):
+        return prop == []
+
+
+class SimplePropositionSyntax:
+    quantifiers = []
+
+    def generate(self) -> Iterator[List[Union[str, int]]]:
+        yield []
+        for q in self.quantifiers:
+            yield [q]
+
+    def generate_entails(self):
+        entail_sents = [["entails", s1, s2] for s1 in self.generate() for s2 in self.generate() if s1 and s2]
+        random.shuffle(entail_sents)
+        for sent in entail_sents:
+            for val in [True, False]:
+                yield sent + [val]
