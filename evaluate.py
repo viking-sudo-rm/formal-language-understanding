@@ -87,7 +87,7 @@ def score(sentence, predictor):
     probs = torch.nn.functional.log_softmax(
         torch.matmul(h, predictor._model._softmax_loss.softmax_w) + predictor._model._softmax_loss.softmax_b, dim=-1
     )
-    return probs[range(len(probs)), targets.long()]
+    return probs[range(len(probs)-2), targets.long()[:-2]]   # Throw away last two probabilities for stop and padding
 
 
 def get_data(path):
@@ -148,7 +148,11 @@ def test_entailment_uniform_true(sents1, sents2, labels):
         predictor = get_predictor(model_path)
         p_xy = [sum(score(s, predictor)).item() for s in xy]
         p_xx = [sum(score(s, predictor)).item() for s in xx]
-        g = sns.scatterplot(x=p_xy, y=p_xx, hue=labels)
+        p_diff = [abs(a - b) for a, b in zip(p_xy, p_xx)]
+        g = sns.barplot(x=xy, y=p_diff, hue=labels)
+        g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
+        g.grid(visible=True, which='major', color='black', linewidth=0.075)
+        plt.tight_layout()
         plt.savefig(f"plots/{model_name}_uniform_true.png")
         plt.clf()
 
@@ -164,17 +168,18 @@ def test_entailment_informative(sents1, sents2, labels):
 
 # def test_uniform_true(sents1, sents2, labels):
 
+if __name__ == "__main__":
+    args = parse_args()
+    models = [model_name for model_name in os.listdir(args.model_dir) if os.path.isdir(os.path.join(args.model_dir, model_name))]
+    predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
+    sents1, sents2, labels = get_data(args.eval_path)
+    accs = defaultdict(list)
 
-args = parse_args()
-models = [model_name for model_name in os.listdir(args.model_dir) if os.path.isdir(os.path.join(args.model_dir, model_name))]
-predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
-sents1, sents2, labels = get_data(args.eval_path)
-accs = defaultdict(list)
-
-if args.analysis_method == "logistic_regression":
-    test_logistic_regression(sents1, sents2, labels)
-elif args.analysis_method == "uniform_true":
-    test_entailment_uniform_true(sents1, sents2, labels)
+    sns.set_style()
+    if args.analysis_method == "logistic_regression":
+        test_logistic_regression(sents1, sents2, labels)
+    elif args.analysis_method == "uniform_true":
+        test_entailment_uniform_true(sents1, sents2, labels)
 
 #     plt.hist(data, label=model, bins=list(range(min(data), max(data) + 1)), alpha=.2)
 # plt.legend()
