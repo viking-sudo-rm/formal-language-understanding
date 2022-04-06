@@ -7,7 +7,7 @@ local CUDA = std.parseInt(std.extVar("CUDA"));
 local NUM_GPUS = 1;
 local NUM_GRAD_ACC = 4;
 local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
-local N_EPOCHS = 10;
+local N_EPOCHS = std.parseInt(std.extVar("N_EPOCHS"));
 
 local D_MODEL = 216;
 local D_FF = 256;
