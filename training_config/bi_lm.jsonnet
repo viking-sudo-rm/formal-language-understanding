@@ -22,7 +22,7 @@ local BASE_READER = {
             "type": "single_id"
           },
         },
-        "max_sequence_length": 400,
+        "max_sequence_length": 10,
         "start_tokens": ["<S>"],
         "end_tokens": ["</S>"],
 };
@@ -56,7 +56,7 @@ local BASE_LOADER = {
 //   },
   "model": {
     "type": "language_model",
-    "bidirectional": true,
+    "bidirectional": false,
     // "num_samples": 8192,  # In our case, the vocabulary is very small.
     # Sparse embeddings don't work with DistributedDataParallel.
     "sparse_embeddings": false,
@@ -73,7 +73,7 @@ local BASE_LOADER = {
     // Applies to the contextualized embeddings.
     "dropout": 0.1,
     "contextualizer": {
-        "type": "bidirectional_language_model_transformer",
+        "type": "pytorch_transformer",
         "input_dim": D_MODEL,
         "hidden_dim": D_FF,
         "num_layers": N_LAYERS,
