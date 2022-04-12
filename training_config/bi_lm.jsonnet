@@ -8,9 +8,12 @@ local NUM_GRAD_ACC = 4;
 local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
 local N_EPOCHS = 3;
 
-local D_MODEL = 216;
-local D_FF = 256;
-local N_LAYERS = 3;
+local D_MODEL = 512;
+local N_HEADS = 8;
+local D_FF = 512;
+local N_LAYERS = 6;
+
+assert D_MODEL % N_HEADS == 0;
 
 local BASE_READER = {
         "type": "simple_language_modeling",
@@ -77,6 +80,7 @@ local BASE_LOADER = {
         "input_dim": D_MODEL,
         "hidden_dim": D_FF,
         "num_layers": N_LAYERS,
+        "num_attention_heads": N_HEADS,
         "dropout": 0.1,
         "input_dropout": 0.1
     }
