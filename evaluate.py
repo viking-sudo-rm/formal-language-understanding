@@ -8,6 +8,8 @@ from collections import defaultdict
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from itertools import product
+import random
 import torch
 
 from allennlp.models.archival import load_archive
@@ -15,11 +17,15 @@ from allennlp.common.util import prepare_environment
 from allennlp.predictors import Predictor
 from allennlp_models.lm.dataset_readers import *
 
+from src.quantifier.syntax import SimpleQuantifierSyntax
+from src.quantifier.semantics import SimpleQuantifierSemantics, SimpleQuantifierWorld
+
 
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("--model_dir", type=str, default="models/quantifier/", help="Directory containing all models to evaluate")
     parser.add_argument("--eval_path", type=str, default="data/quantifier/eval.tsv")
+    parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     parser.add_argument("--false_only", action="store_true")
     parser.add_argument("--analysis_method", type=str, help="Options: [logistic_regression, uniform_true, independently_truthful, informative]")
     return parser.parse_args()
@@ -33,12 +39,13 @@ def contrast(sentence):
     return new_sent
 
 
-def get_predictor(path):
+def get_predictor(path, cuda=True):
     archive = load_archive(os.path.join(path, "model.tar.gz"), cuda_device=-1)
     config = deepcopy(archive.config)
     prepare_environment(config)
     model = archive.model
     model.eval()
+    model.cuda()
     dataset_reader = archive.validation_dataset_reader
     predictor = Predictor(model, dataset_reader)
     return predictor
@@ -101,6 +108,16 @@ def get_data(path):
 def split(data):
     split_idx = len(data) // 2
     return data[:split_idx], data[split_idx:]
+  
+  
+def get_sentences(utterances):
+    data = [
+        (" ".join(u1), " ".join(u2), semantics.entails(tuple(u1), tuple(u2)))
+        for u1, u2 in product(utterances, utterances)
+    ]
+    u1s, u2s, values = zip(*data)
+    return list(u1s), list(u2s), np.array(list(values))
+  
 
 def test_logistic_regression(sents1, sents2, labels, n_splits=20):
     for _ in range(n_splits):
@@ -129,6 +146,7 @@ def test_logistic_regression(sents1, sents2, labels, n_splits=20):
     sns.kdeplot(data=pd.DataFrame(accs))
     plt.show()
 
+    
 def build_test_sentences(s1, s2, test):
     if test == "uniform_true":  # [[x]] ⊆ [[y]] <==> p(xy) = p(xx)
         pass
@@ -142,7 +160,6 @@ def test_entailment_uniform_true(sents1, sents2, labels):
     """[[x]] ⊆ [[y]] <==> p(xy) = p(xx)"""
     xy = [f"{x} {y}" for x, y in zip(sents1, sents2)]
     xx = [f"{x} {x}" for x in sents1]
-
     for model_name in models:
         model_path = os.path.join(args.model_dir, model_name)
         predictor = get_predictor(model_path)
@@ -180,37 +197,43 @@ if __name__ == "__main__":
         test_logistic_regression(sents1, sents2, labels)
     elif args.analysis_method == "uniform_true":
         test_entailment_uniform_true(sents1, sents2, labels)
+    elif args.analysis_method == "regression_2":    # I'm not sure it makes sense to have all these analyses in the same script, but this is easy for now
+        use_cuda = torch.cuda.is_available()
+        args = parse_args()
+        models = [
+            model_name
+            for model_name in os.listdir(args.model_dir)
+            if os.path.isdir(os.path.join(args.model_dir, model_name))
+        ]
+        predictors = [get_predictor(os.path.join(args.model_dir, model), cuda=use_cuda) for model in models]
+        syntax = SimpleQuantifierSyntax()
+        worlds = list(SimpleQuantifierWorld.generate_all(args.n_items))
+        semantics = SimpleQuantifierSemantics(worlds)
+        utterances = [u for u in syntax.generate() if u]
 
-#     plt.hist(data, label=model, bins=list(range(min(data), max(data) + 1)), alpha=.2)
-# plt.legend()
-# plt.tight_layout()
-# plt.show()
+        counts = defaultdict(int)
+        totals = defaultdict(int)
+        for _ in range(10):
+            print("Random shuffle of utterances")
+            random.shuffle(utterances)
+            train_utterances = utterances[:3]
+            test_utterances = utterances[3:]
+            train_sents1, train_sents2, train_labels = get_sentences(train_utterances)
+            test_sents1, test_sents2, test_labels = get_sentences(test_utterances)
+            for model_name in models:
+                model_path = os.path.join(args.model_dir, model_name)
+                predictor = get_predictor(model_path)
+                train_features = featurize(train_sents1, train_sents2, predictor)
+                test_features = featurize(test_sents1, test_sents2, predictor)
+                clf = LogisticRegression().fit(train_features, train_labels)
+                preds = clf.predict(test_features)
+                counts[model_name] += (preds == test_labels).sum()
+                totals[model_name] += len(test_labels)
+            counts["true"] = (test_labels == 1).sum()
+            totals["true"] = len(test_labels)
+            counts["false"] = (test_labels == 0).sum()
+            totals["false"] += len(test_labels)
 
-# predictions = []
-# ground_truths = []
-# probabilities = []
-# while instances:
-#     instance1 = instances.pop(0)
-#     instance2 = instances.pop(0)
-#     label1 = labels.pop(0) == "True"
-#     labels.pop(0)
-#     loss1 = predictor.predict_instance(instance1)["loss"]
-#     loss2 = predictor.predict_instance(instance2)["loss"]
-#     if args.false_only:
-#         loss1 = 1.
-#         loss2 = 0.
-#     predicted1 = loss1 < loss2
-#     cond_prob1 = np.exp(loss1) / (np.exp(loss1) + np.exp(loss2))
-#     predictions.append(0 if predicted1 else 1)
-#     ground_truths.append(0 if label1 else 1)
-#     probabilities.append([cond_prob1, 1 - cond_prob1])
-
-# predictions = np.array(predictions)
-# ground_truths = np.array(ground_truths)
-# probabilities = np.array(probabilities)
-
-# accuracy = np.sum(predictions == ground_truths) / len(predictions)
-# cross_ent = np.sum(-np.log(probabilities)[ground_truths]) / len(predictions)
-
-# print("Accuracy", accuracy)
-# print("Cross ent", cross_ent)
+        for model in counts:
+            acc = counts[model] / totals[model]
+            print(f"{model} mean: {acc}")

@@ -9,9 +9,12 @@ local NUM_GRAD_ACC = 4;
 local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
 local N_EPOCHS = std.parseInt(std.extVar("N_EPOCHS"));
 
-local D_MODEL = 216;
-local D_FF = 256;
-local N_LAYERS = 3;
+local D_MODEL = 512;
+local N_HEADS = 8;
+local D_FF = 512;
+local N_LAYERS = 6;
+
+assert D_MODEL % N_HEADS == 0;
 
 local BASE_READER = {
         "type": "simple_language_modeling",
@@ -23,7 +26,7 @@ local BASE_READER = {
             "type": "single_id"
           },
         },
-        "max_sequence_length": 400,
+        "max_sequence_length": 10,
         "start_tokens": ["<S>"],
         "end_tokens": ["</S>"],
 };
@@ -58,7 +61,7 @@ local BASE_LOADER = {
 //   },
   "model": {
     "type": "language_model",
-    "bidirectional": true,
+    "bidirectional": false,
     // "num_samples": 8192,  # In our case, the vocabulary is very small.
     # Sparse embeddings don't work with DistributedDataParallel.
     "sparse_embeddings": false,
@@ -75,10 +78,11 @@ local BASE_LOADER = {
     // Applies to the contextualized embeddings.
     "dropout": 0.1,
     "contextualizer": {
-        "type": "bidirectional_language_model_transformer",
+        "type": "pytorch_transformer",
         "input_dim": D_MODEL,
         "hidden_dim": D_FF,
         "num_layers": N_LAYERS,
+        "num_attention_heads": N_HEADS,
         "dropout": 0.1,
         "input_dropout": 0.1
     }
