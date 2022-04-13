@@ -75,15 +75,11 @@ class RationalAgent:
         """Represents a speaker step in the RSA recursion.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim1; output over dim0."""
-        # utilities = (listen_probs + 1e-6).log()
+        utilities = (listen_probs + 1e-6).log()
         # utilities = torch.where(utilities > -INF, utilities, -INF * torch.ones_like(utilities))
         # energies = utilities - self.rsa.costs.unsqueeze(dim=1)
         # return (self.temp * energies).softmax(dim=0)
-        if self.temp == 1:
-            # Don't take unnecessary powers.
-            scores = listen_probs * torch.exp(-self.rsa.costs.unsqueeze(dim=-1))
-        else:
-            scores = (listen_probs ** self.temp) * torch.exp(-self.rsa.costs.unsqueeze(dim=-1))
+        scores = torch.exp(self.temp * (utilities - self.rsa.costs.unsqueeze(dim=-1)))
 
         probs = scores / scores.sum(dim=0, keepdim=True)
         return _fix_nans(probs, dim=0)

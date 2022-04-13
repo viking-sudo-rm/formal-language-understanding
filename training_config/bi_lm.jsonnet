@@ -1,12 +1,13 @@
 // Adapted from https://github.com/allenai/allennlp-models/blob/main/training_config/lm/bidirectional_language_model.jsonnet
 
 local TRAIN = std.extVar("TRAIN");
+local DEV = std.extVar("DEV");
 local CUDA = std.parseInt(std.extVar("CUDA"));
 
 local NUM_GPUS = 1;
 local NUM_GRAD_ACC = 4;
 local BATCH_SIZE = 512 / NUM_GPUS / NUM_GRAD_ACC;
-local N_EPOCHS = 3;
+local N_EPOCHS = std.parseInt(std.extVar("N_EPOCHS"));
 
 local D_MODEL = 512;
 local N_HEADS = 8;
@@ -45,6 +46,7 @@ local BASE_LOADER = {
   // given our large vocabulary. We'll need to evaluate against the test set
   // (when we'll want a full softmax) with the CPU.
   "train_data_path": TRAIN,
+  "validation_data_path": DEV,
 
 //   "vocabulary": {
 //       // Use a prespecified vocabulary for efficiency.
