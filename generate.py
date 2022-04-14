@@ -24,6 +24,7 @@ def parse_args():
     parser = ArgumentParser()
     parser.add_argument("--task", type=str, choices=["quantifier", "arithmetic"], default="quantifier")
     parser.add_argument("-n", "--n_docs", type=int, default=100000, help="Number of total documents (training examples) to sample.")
+    parser.add_argument("--n_sents", type=int, default=5, help="Number of sentences per document.")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     parser.add_argument("--cost", type=float, default=0, help="Cost per token.")
     parser.add_argument("--seed", type=int, default=2, help="Fixed random seed for data generation.")
