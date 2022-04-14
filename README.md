@@ -6,6 +6,12 @@
 pip install allennlp allennlp_models
 ```
 
+To get a singularity container for `allennlp`, one can also do:
+
+```shell
+singularity pull docker://allennlp/allennlp:latest
+```
+
 ## Usage
 
 To generate training data (this can also be found in generate_data.sh):
