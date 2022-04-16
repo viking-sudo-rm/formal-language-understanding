@@ -12,17 +12,22 @@ To get a singularity container for `allennlp`, one can also do:
 singularity pull docker://allennlp/allennlp:latest
 ```
 
-## Usage
+## Generate Synthetic Data
 
 To generate training data (this can also be found in generate_data.sh):
 ```shell
-mkdir data data/quantifier
-python generate.py > data/quantifier/rsa1.txt
-python generate.py --depth=0 > data/quantifier/rsa0.txt
-python generate.py --noisy > data/quantifier/rsa1-noisy.txt
-python generate.py --dependent > data/quantifier/rsa1-dep.txt
-python generate.py --noisy --depth=0 > data/quantifier/rsa0-noisy.txt
+lang="powerset"
+temp=5
+cost=.5
+mkdir data data/$lang
+python generate.py $lang --temp=$temp --cost=$cost  > data/$lang/rsa1.txt
+python generate.py $lang --temp=5 --cost=$cost --depth=0 > data/$lang/rsa0.txt
+python generate.py $lang --temp=5 --cost=$cost --noisy > data/$lang/rsa1-noisy.txt
+python generate.py $lang --temp=5 --cost=$cost --dependent > data/$lang/rsa1-dep.txt
+python generate.py $lang --temp=5 --cost=$cost --noisy --depth=0 > data/$lang/rsa0-noisy.txt
 ```
+
+# Train LMs
 
 The following command shows how to train and save models:
 ```shell

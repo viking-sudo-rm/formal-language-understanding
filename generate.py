@@ -16,13 +16,15 @@ from src.rational_speech import RationalAgent, RationalSpeechActs
 
 
 logging.basicConfig()
-log = logging.getLogger("fol_main")
+log = logging.getLogger("generate")
 log.setLevel(logging.INFO)
+
+languages = ["quantifier", "arithmetic", "powerset"]
 
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument("--task", type=str, choices=["quantifier", "arithmetic"], default="quantifier")
+    parser.add_argument("lang", type=str, choices=languages, default="quantifier")
     parser.add_argument("-n", "--n_docs", type=int, default=100000, help="Number of total documents (training examples) to sample.")
     parser.add_argument("--n_sents", type=int, default=5, help="Number of sentences per document.")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
@@ -43,18 +45,18 @@ def main(args):
     torch.manual_seed(args.seed)
 
     # Set up the model for the world and language's syntax and semantics.
-    if args.task == "quantifier":
+    if args.lang == "quantifier":
         syntax = SimpleQuantifierSyntax()
         worlds = list(SimpleQuantifierWorld.generate_all(args.n_items))
         semantics = SimpleQuantifierSemantics(worlds)
         to_string = q_to_string
-    elif args.task == "powerset":
+    elif args.lang == "powerset":
         syntax = PowersetSyntax(args.n_items)
         semantics = PowersetSemantics()
         worlds = [w for w in range(args.n_items)]
         to_string = lambda prop: "".join(str(x) for x in prop)
     else:
-        raise NotImplementedError(f"Unknown task: {args.task}.")
+        raise NotImplementedError(f"Unknown lang: {args.lang}.")
     utterances = list(syntax.generate())
     costs = torch.tensor([args.cost * syntax.get_cost(u) for u in utterances])
 
