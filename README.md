@@ -32,9 +32,9 @@ python generate.py $lang --temp=5 --cost=$cost --noisy --depth=0 > data/$lang/rs
 The following command shows how to train and save models:
 ```shell
 mkdir models models/quantifier
-CUDA=0 TRAIN=data/quantifier/rsa1.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1
-CUDA=0 TRAIN=data/quantifier/rsa0.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa0
-CUDA=0 TRAIN=data/quantifier/rsa1-noisy.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1-noisy
-CUDA=0 TRAIN=data/quantifier/rsa1-dep.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1-dep
-CUDA=0 TRAIN=data/quantifier/rsa0-noisy.txt python -m allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa0-noisy
+CUDA=0 TRAIN=data/quantifier/rsa1.txt allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1
+CUDA=0 TRAIN=data/quantifier/rsa0.txt allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa0
+CUDA=0 TRAIN=data/quantifier/rsa1-noisy.txt allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1-noisy
+CUDA=0 TRAIN=data/quantifier/rsa1-dep.txt allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa1-dep
+CUDA=0 TRAIN=data/quantifier/rsa0-noisy.txt allennlp train training_config/bi_lm.jsonnet -s=models/quantifier/rsa0-noisy
 ```
