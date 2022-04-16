@@ -1,4 +1,4 @@
-# synthetic-language-understanding
+# Language Modeling and Pragmatics
 
 ## Setup
 
@@ -27,7 +27,7 @@ python generate.py $lang --temp=5 --cost=$cost --dependent > data/$lang/rsa1-dep
 python generate.py $lang --temp=5 --cost=$cost --noisy --depth=0 > data/$lang/rsa0-noisy.txt
 ```
 
-# Train LMs
+## Train LMs
 
 The following command shows how to train and save models:
 ```shell
