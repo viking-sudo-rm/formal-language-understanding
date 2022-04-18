@@ -8,11 +8,11 @@ Codebase for investigating the semantic capabilities of language models in forma
 pip install allennlp allennlp_models
 ```
 
-To get a singularity container for `allennlp`, one can also do:
+<!-- To get a singularity container for `allennlp`, one can also do:
 
 ```shell
 singularity pull docker://allennlp/allennlp:latest
-```
+``` -->
 
 ## Generate Synthetic Data
 
