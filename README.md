@@ -16,18 +16,13 @@ singularity pull docker://allennlp/allennlp:latest
 
 ## Generate Synthetic Data
 
-To generate training data (this can also be found in generate_data.sh):
+To generate training data in the language `powerset`:
+
 ```shell
-lang="powerset"
-temp=5
-cost=.5
-mkdir data data/$lang
-python generate.py $lang --temp=$temp --cost=$cost  > data/$lang/rsa1.txt
-python generate.py $lang --temp=5 --cost=$cost --depth=0 > data/$lang/rsa0.txt
-python generate.py $lang --temp=5 --cost=$cost --noisy > data/$lang/rsa1-noisy.txt
-python generate.py $lang --temp=5 --cost=$cost --dependent > data/$lang/rsa1-dep.txt
-python generate.py $lang --temp=5 --cost=$cost --noisy --depth=0 > data/$lang/rsa0-noisy.txt
+python generate.py powerset --temp=5 --cost=.5  > documents.txt
 ```
+
+Full documentation of all the training data can be found in generate.s.
 
 ## Train LMs
 
