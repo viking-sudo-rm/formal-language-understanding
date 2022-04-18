@@ -1,4 +1,6 @@
-# Language Modeling and Pragmatics
+# Formal Language Understanding
+
+Codebase for investigating the semantic capabilities of language models in formal language environments. Specifically, in these environments, the process generating the training data is idealized in terms of pragmatic theory and controllable via many hyperparameters.
 
 ## Setup
 
