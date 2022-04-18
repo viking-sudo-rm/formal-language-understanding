@@ -37,3 +37,5 @@ The following command shows how to train and save a language model on the synthe
 mkdir models models/quantifier
 CUDA=0 TRAIN=documents.txt DEV=dev_documents.txt allennlp train training_config/bi_lm.jsonnet -s=rsa1_model
 ```
+
+Note that this part can be done using whatever language modeling framework you want, but I'm using AllenNLP.
