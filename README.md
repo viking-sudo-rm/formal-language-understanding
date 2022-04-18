@@ -34,7 +34,6 @@ Full documentation of all the training data can be found in generate.s.
 
 The following command shows how to train and save a language model on the synthetic data:
 ```shell
-mkdir models models/quantifier
 CUDA=0 TRAIN=documents.txt DEV=dev_documents.txt allennlp train training_config/bi_lm.jsonnet -s=rsa1_model
 ```
 
