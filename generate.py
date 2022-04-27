@@ -25,7 +25,6 @@ def parse_args():
     # parser.add_argument("agent", type=str, choices=["true", "rsa", "eval"], help="Agent model to use, or train/test for eval dataset.")
     parser.add_argument("--task", type=str, choices=["quantifier", "powerset"], default="quantifier")
     parser.add_argument("-n", "--n_docs", type=int, default=10000, help="Number of total documents (training examples) to sample.")
-    parser.add_argument("--n_sents", type=int, default=10, help="Number of sentences per document.")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     # parser.add_argument("--n_predicates", type=int, default=2, help="Number of predicates.")
     parser.add_argument("--cost", type=float, default=1, help="Cost per token.")
@@ -76,10 +75,12 @@ def main(args):
     for _ in tqdm.trange(args.n_docs):
         world = random.randint(0, len(worlds) - 1)
         context = []
-        for _ in range(args.n_sents):
+        for _ in range(512):
             curr_context = None if context == [] else context
             sent = agent.speak(world, context=curr_context)
             context.append(sent)
+            if syntax.is_empty(sent):
+                break
         serialized = " ".join(to_string(x) for x in context if not syntax.is_empty(x))
         print(serialized)
 
