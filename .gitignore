@@ -8,3 +8,5 @@ data/
 models/
 .vscode/
 *.out
+.idea
+plots

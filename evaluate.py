@@ -11,6 +11,7 @@ import seaborn as sns
 from itertools import product
 import random
 import torch
+from allennlp.training.metrics.auc import Auc
 
 from allennlp.models.archival import load_archive
 from allennlp.common.util import prepare_environment
@@ -89,7 +90,8 @@ def get_targets(sentence, predictor):
 
 def score(sentence, predictor):
     lm_embeddings = get_lm_embeddings(sentence, predictor)
-    h = torch.Tensor(lm_embeddings).chunk(2, -1)[0]    # Get only the forward hidden states
+    h = torch.Tensor(lm_embeddings)
+    # .chunk(2, -1)[0]    # Get only the forward hidden states
     targets = get_targets(sentence, predictor)
     probs = torch.nn.functional.log_softmax(
         torch.matmul(h, predictor._model._softmax_loss.softmax_w) + predictor._model._softmax_loss.softmax_b, dim=-1
@@ -145,7 +147,6 @@ def test_logistic_regression(sents1, sents2, labels, n_splits=20):
 
     sns.kdeplot(data=pd.DataFrame(accs))
     plt.show()
-
     
 def build_test_sentences(s1, s2, test):
     if test == "uniform_true":  # [[x]] ⊆ [[y]] <==> p(xy) = p(xx)
@@ -154,6 +155,28 @@ def build_test_sentences(s1, s2, test):
         pass
     elif test == "informative":  # [[x]] ⊆ [[y]] <==> p(y | x) / p(\epsilon | x) = p(y | y) / p(\epsilon | y)
         pass
+
+def scatterplot(lhs, rhs, labels, name):
+    g = sns.scatterplot(x=lhs, y=rhs, hue=labels)
+    g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
+    g.grid(visible=True, which='major', color='black', linewidth=0.075)
+    plt.tight_layout()
+    plt.savefig(f"plots/{name}.png")
+    plt.clf()
+
+def kdeplot(diff, labels, name):
+    g = sns.kdeplot(x=diff, hue=labels)
+    g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
+    g.grid(visible=True, which='major', color='black', linewidth=0.075)
+    plt.tight_layout()
+    plt.savefig(f"plots/{name}.png")
+    plt.clf()
+
+def auc(diff, labels):
+    auc = Auc()
+    auc(torch.Tensor(diff), torch.Tensor(labels))
+    return auc.get_metric()
+
 
 
 def test_entailment_uniform_true(sents1, sents2, labels):
@@ -166,16 +189,26 @@ def test_entailment_uniform_true(sents1, sents2, labels):
         p_xy = [sum(score(s, predictor)).item() for s in xy]
         p_xx = [sum(score(s, predictor)).item() for s in xx]
         p_diff = [abs(a - b) for a, b in zip(p_xy, p_xx)]
-        g = sns.barplot(x=xy, y=p_diff, hue=labels)
-        g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
-        g.grid(visible=True, which='major', color='black', linewidth=0.075)
-        plt.tight_layout()
-        plt.savefig(f"plots/{model_name}_uniform_true.png")
-        plt.clf()
+
+        # g = sns.scatterplot(x=p_xy, y=p_xx, hue=labels)
+        # g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
+        # g.grid(visible=True, which='major', color='black', linewidth=0.075)
+        # plt.tight_layout()
+        # plt.savefig(f"plots/{model_name}_uniform_true.png")
+        # plt.clf()
 
 
 def test_entailment_independent_truthful(sents1, sents2, labels):
     """[[x]] ⊆ [[y]] <==> p(xy) / p(yT) = p(xx) / p(xT)"""
+    xy = [f"{x} {y}" for x, y in zip(sents1, sents2)]
+    xx = [f"{x} {x}" for x in sents1]
+    xT = sents1
+    yT = sents2
+    for model_name in models:
+        model_path = os.path.join(args.model_dir, model_name)
+        predictor = get_predictor(model_path)
+        p_xy = [sum(score(s, predictor)).item() for s in xy]
+        p_xx = [sum(score(s, predictor)).item() for s in xx]
     # TODO
 
 def test_entailment_informative(sents1, sents2, labels):
