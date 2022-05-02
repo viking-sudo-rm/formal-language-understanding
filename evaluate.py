@@ -40,13 +40,14 @@ def contrast(sentence):
     return new_sent
 
 
-def get_predictor(path, cuda=True):
+def get_predictor(path):
     archive = load_archive(os.path.join(path, "model.tar.gz"), cuda_device=-1)
     config = deepcopy(archive.config)
     prepare_environment(config)
     model = archive.model
     model.eval()
-    model.cuda()
+    if torch.cuda.is_available():
+        model.cuda()
     dataset_reader = archive.validation_dataset_reader
     predictor = Predictor(model, dataset_reader)
     return predictor
@@ -96,7 +97,7 @@ def score(sentence, predictor):
     probs = torch.nn.functional.log_softmax(
         torch.matmul(h, predictor._model._softmax_loss.softmax_w) + predictor._model._softmax_loss.softmax_b, dim=-1
     )
-    return probs[range(len(probs)-2), targets.long()[:-2]]   # Throw away last two probabilities for stop and padding
+    return probs[range(len(probs)-1), targets.long()[:-1]]   # Throw away last two probabilities for padding. Note: STOP IS STILL PRESENT
 
 
 def get_data(path):
@@ -145,7 +146,7 @@ def test_logistic_regression(sents1, sents2, labels, n_splits=20):
     for model, data in accs.items():
         print(f"{model} mean: {np.mean(data)}")
 
-    sns.kdeplot(data=pd.DataFrame(accs))
+    sns.kdeplot(data=pd.DataFrame(accs), common_norm=True)
     plt.show()
     
 def build_test_sentences(s1, s2, test):
@@ -158,10 +159,10 @@ def build_test_sentences(s1, s2, test):
 
 def scatterplot(lhs, rhs, labels, name):
     g = sns.scatterplot(x=lhs, y=rhs, hue=labels)
-    g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
+    # g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
     g.grid(visible=True, which='major', color='black', linewidth=0.075)
     plt.tight_layout()
-    plt.savefig(f"plots/{name}.png")
+    plt.savefig(f"plots/{name}_scatter.png")
     plt.clf()
 
 def kdeplot(diff, labels, name):
@@ -169,7 +170,7 @@ def kdeplot(diff, labels, name):
     g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
     g.grid(visible=True, which='major', color='black', linewidth=0.075)
     plt.tight_layout()
-    plt.savefig(f"plots/{name}.png")
+    plt.savefig(f"plots/{name}_kdeplot.png")
     plt.clf()
 
 def auc(diff, labels):
@@ -186,9 +187,11 @@ def test_entailment_uniform_true(sents1, sents2, labels):
     for model_name in models:
         model_path = os.path.join(args.model_dir, model_name)
         predictor = get_predictor(model_path)
-        p_xy = [sum(score(s, predictor)).item() for s in xy]
-        p_xx = [sum(score(s, predictor)).item() for s in xx]
-        p_diff = [abs(a - b) for a, b in zip(p_xy, p_xx)]
+        lhs = [sum(score(s, predictor)[:-1]).item() for s in xy]
+        rhs = [sum(score(s, predictor)[:-1]).item() for s in xx]
+        p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
+        scatterplot(lhs, rhs, labels, f"{model_name}_uniform")
+        kdeplot(p_diff, labels, f"{model_name}_uniform")
 
         # g = sns.scatterplot(x=p_xy, y=p_xx, hue=labels)
         # g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
@@ -207,13 +210,36 @@ def test_entailment_independent_truthful(sents1, sents2, labels):
     for model_name in models:
         model_path = os.path.join(args.model_dir, model_name)
         predictor = get_predictor(model_path)
-        p_xy = [sum(score(s, predictor)).item() for s in xy]
-        p_xx = [sum(score(s, predictor)).item() for s in xx]
+        p_xy = [sum(score(s, predictor)[:-1]).item() for s in xy]
+        p_xx = [sum(score(s, predictor)[:-1]).item() for s in xx]
+        p_xT = [sum(score(s, predictor)).item() for s in xT]
+        p_yT = [sum(score(s, predictor)).item() for s in yT]
+        lhs = [a / b for a, b in zip(p_xy, p_yT)]
+        rhs = [a / b for a, b in zip(p_xx, p_xT)]
+        p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
+        scatterplot(lhs, rhs, labels, f"{model_name}_independent")
+        kdeplot(p_diff, labels, f"{model_name}_independent")
     # TODO
 
 def test_entailment_informative(sents1, sents2, labels):
     """[[x]] ⊆ [[y]] <==> p(y | x) / p(\\epsilon | x) = p(y | y) / p(\\epsilon | y)"""
-    # TODO
+    xy = [f"{x} {y}" for x, y in zip(sents1, sents2)]
+    yy = [f"{y} {y}" for y in sents2]
+    xT = sents1
+    yT = sents2
+    for model_name in models:
+        model_path = os.path.join(args.model_dir, model_name)
+        predictor = get_predictor(model_path)
+        p_y_x = [score(s, predictor)[1].item() for s in xy]
+        p_y_y = [score(s, predictor)[1].item() for s in yy]
+        p_T_x = [score(s, predictor)[1].item() for s in xT]
+        p_T_y = [score(s, predictor)[1].item() for s in yT]
+        lhs = [a / b for a, b in zip(p_y_x, p_T_x)]
+        rhs = [a / b for a, b in zip(p_y_y, p_T_y)]
+        p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
+        scatterplot(lhs, rhs, labels, f"{model_name}_informative")
+        kdeplot(p_diff, labels, f"{model_name}_informative")
+
 
 
 # def test_uniform_true(sents1, sents2, labels):
@@ -221,7 +247,9 @@ def test_entailment_informative(sents1, sents2, labels):
 if __name__ == "__main__":
     args = parse_args()
     models = [model_name for model_name in os.listdir(args.model_dir) if os.path.isdir(os.path.join(args.model_dir, model_name))]
-    predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
+    # use_cuda = torch.cuda.is_available()
+    # predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
+    # predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
     sents1, sents2, labels = get_data(args.eval_path)
     accs = defaultdict(list)
 
@@ -230,6 +258,10 @@ if __name__ == "__main__":
         test_logistic_regression(sents1, sents2, labels)
     elif args.analysis_method == "uniform_true":
         test_entailment_uniform_true(sents1, sents2, labels)
+    elif args.analysis_method == "independent_true":
+        test_entailment_independent_truthful(sents1, sents2, labels)
+    elif args.analysis_method == "informative":
+        test_entailment_informative(sents1, sents2, labels)
     elif args.analysis_method == "regression_2":    # I'm not sure it makes sense to have all these analyses in the same script, but this is easy for now
         use_cuda = torch.cuda.is_available()
         args = parse_args()
@@ -238,7 +270,7 @@ if __name__ == "__main__":
             for model_name in os.listdir(args.model_dir)
             if os.path.isdir(os.path.join(args.model_dir, model_name))
         ]
-        predictors = [get_predictor(os.path.join(args.model_dir, model), cuda=use_cuda) for model in models]
+        predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
         syntax = SimpleQuantifierSyntax()
         worlds = list(SimpleQuantifierWorld.generate_all(args.n_items))
         semantics = SimpleQuantifierSemantics(worlds)
