@@ -28,7 +28,7 @@ def parse_args():
     parser.add_argument("--eval_path", type=str, default="data/quantifier/eval.tsv")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     parser.add_argument("--false_only", action="store_true")
-    parser.add_argument("--analysis_method", type=str, help="Options: [logistic_regression, uniform_true, independently_truthful, informative]")
+    parser.add_argument("--analysis_method", type=str, help="Options: [logistic_regression, literal, independent, informative]")
     return parser.parse_args()
 
 
@@ -256,9 +256,9 @@ if __name__ == "__main__":
     sns.set_style()
     if args.analysis_method == "logistic_regression":
         test_logistic_regression(sents1, sents2, labels)
-    elif args.analysis_method == "uniform_true":
+    elif args.analysis_method == "literal":
         test_entailment_uniform_true(sents1, sents2, labels)
-    elif args.analysis_method == "independent_true":
+    elif args.analysis_method == "independent":
         test_entailment_independent_truthful(sents1, sents2, labels)
     elif args.analysis_method == "informative":
         test_entailment_informative(sents1, sents2, labels)
