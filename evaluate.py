@@ -159,19 +159,21 @@ def build_test_sentences(s1, s2, test):
     elif test == "informative":  # [[x]] ⊆ [[y]] <==> p(y | x) / p(\epsilon | x) = p(y | y) / p(\epsilon | y)
         pass
 
-def scatterplot(lhs, rhs, labels, name):
+def scatterplot(lhs, rhs, labels, name, auc):
     g = sns.scatterplot(x=lhs, y=rhs, hue=labels)
     # g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
     g.grid(visible=True, which='major', color='black', linewidth=0.075)
     plt.tight_layout()
+    g.annotate(text=f"AUC={str(auc)}", xy=(1, 1), xytext=(0.05, 0.9), textcoords='axes fraction')
     plt.savefig(f"plots/{name}_scatter.png")
     plt.clf()
 
-def kdeplot(diff, labels, name):
+def kdeplot(diff, labels, name, auc):
     g = sns.kdeplot(x=diff, hue=labels)
     g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
     g.grid(visible=True, which='major', color='black', linewidth=0.075)
     plt.tight_layout()
+    g.annotate(text=f"AUC={str(auc)}", xy=(0, 0), xytext=(0.05, 0.9), textcoords='axes fraction')
     plt.savefig(f"plots/{name}_kdeplot.png")
     plt.clf()
 
@@ -192,8 +194,9 @@ def test_entailment_uniform_true(sents1, sents2, labels):
         lhs = [sum(score(s, predictor)[:-1]).item() for s in xy]
         rhs = [sum(score(s, predictor)[:-1]).item() for s in xx]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
-        scatterplot(lhs, rhs, labels, f"{model_name}_uniform")
-        kdeplot(p_diff, labels, f"{model_name}_uniform")
+        auc_score = auc(p_diff, labels)
+        scatterplot(lhs, rhs, labels, f"{model_name}_uniform", auc=auc_score)
+        kdeplot(p_diff, labels, f"{model_name}_uniform", auc=auc_score)
 
         # g = sns.scatterplot(x=p_xy, y=p_xx, hue=labels)
         # g.set_xticklabels(g.get_xticklabels(), rotation=90, ha="center")
@@ -219,8 +222,9 @@ def test_entailment_independent_truthful(sents1, sents2, labels):
         lhs = [a / b for a, b in zip(p_xy, p_yT)]
         rhs = [a / b for a, b in zip(p_xx, p_xT)]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
-        scatterplot(lhs, rhs, labels, f"{model_name}_independent")
-        kdeplot(p_diff, labels, f"{model_name}_independent")
+        auc_score = auc(p_diff, labels)
+        scatterplot(lhs, rhs, labels, f"{model_name}_independent", auc=auc_score)
+        kdeplot(p_diff, labels, f"{model_name}_independent", auc=auc_score)
     # TODO
 
 def test_entailment_informative(sents1, sents2, labels):
@@ -239,8 +243,9 @@ def test_entailment_informative(sents1, sents2, labels):
         lhs = [a / b for a, b in zip(p_y_x, p_T_x)]
         rhs = [a / b for a, b in zip(p_y_y, p_T_y)]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
-        scatterplot(lhs, rhs, labels, f"{model_name}_informative")
-        kdeplot(p_diff, labels, f"{model_name}_informative")
+        auc_score = auc(p_diff, labels)
+        scatterplot(lhs, rhs, labels, f"{model_name}_informative", auc=auc_score)
+        kdeplot(p_diff, labels, f"{model_name}_informative", auc=auc_score)
 
 
 
