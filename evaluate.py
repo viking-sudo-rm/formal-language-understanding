@@ -217,8 +217,8 @@ def test_entailment_independent_truthful(sents1, sents2, labels):
         p_xx = [sum(score(s, predictor)[:-1]).item() for s in xx]
         p_xT = [sum(score(s, predictor)).item() for s in xT]
         p_yT = [sum(score(s, predictor)).item() for s in yT]
-        lhs = [a / b for a, b in zip(p_xy, p_yT)]
-        rhs = [a / b for a, b in zip(p_xx, p_xT)]
+        lhs = [a - b for a, b in zip(p_xy, p_yT)]
+        rhs = [a - b for a, b in zip(p_xx, p_xT)]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
         auc_score = auc(p_diff, labels)
         scatterplot(lhs, rhs, labels, f"{model_name}_independent", auc=auc_score)
@@ -226,6 +226,7 @@ def test_entailment_independent_truthful(sents1, sents2, labels):
     # TODO
 
 def test_entailment_informative(sents1, sents2, labels):
+    #TODO: Remove conditional probabilities
     """[[x]] ⊆ [[y]] <==> p(y | x) / p(\\epsilon | x) = p(y | y) / p(\\epsilon | y)"""
     xy = [f"{x} {y}" for x, y in zip(sents1, sents2)]
     yy = [f"{y} {y}" for y in sents2]
@@ -238,8 +239,8 @@ def test_entailment_informative(sents1, sents2, labels):
         p_y_y = [score(s, predictor)[1].item() for s in yy]
         p_T_x = [score(s, predictor)[1].item() for s in xT]
         p_T_y = [score(s, predictor)[1].item() for s in yT]
-        lhs = [a / b for a, b in zip(p_y_x, p_T_x)]
-        rhs = [a / b for a, b in zip(p_y_y, p_T_y)]
+        lhs = [a - b for a, b in zip(p_y_x, p_T_x)]
+        rhs = [a - b for a, b in zip(p_y_y, p_T_y)]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
         auc_score = auc(p_diff, labels)
         scatterplot(lhs, rhs, labels, f"{model_name}_informative", auc=auc_score)
