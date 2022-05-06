@@ -24,8 +24,8 @@ from src.powerset.syntax import PowersetSyntax
 def parse_args():
     parser = ArgumentParser()
     parser.add_argument("analysis_method", type=str, choices=["logistic_regression", "literal", "independent", "informative"])
-    parser.add_argument("--model_dir", type=str, default="models/quantifier/", help="Directory containing all models to evaluate")
-    parser.add_argument("--eval_path", type=str, default="data/quantifier/eval.tsv")
+    parser.add_argument("--model_dir", type=str, default="models", help="Directory containing all models to evaluate")
+    parser.add_argument("--eval_path", type=str, default="data/eval.tsv")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     parser.add_argument("--false_only", action="store_true")
     parser.add_argument("--cost", type=float, default=None)
@@ -113,8 +113,8 @@ def get_data(path):
 def split(data):
     split_idx = len(data) // 2
     return data[:split_idx], data[split_idx:]
-  
-  
+
+
 def get_sentences(utterances):
     data = [
         (" ".join(u1), " ".join(u2), semantics.entails(tuple(u1), tuple(u2)))
@@ -122,7 +122,7 @@ def get_sentences(utterances):
     ]
     u1s, u2s, values = zip(*data)
     return list(u1s), list(u2s), np.array(list(values))
-  
+
 
 def test_logistic_regression(sents1, sents2, labels, n_splits=20):
     for _ in range(n_splits):
