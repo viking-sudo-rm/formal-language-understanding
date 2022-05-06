@@ -18,17 +18,17 @@ from allennlp.common.util import prepare_environment
 from allennlp.predictors import Predictor
 from allennlp_models.lm.dataset_readers import *
 
-from src.quantifier.syntax import SimpleQuantifierSyntax
-from src.quantifier.semantics import SimpleQuantifierSemantics, SimpleQuantifierWorld
+from src.powerset.syntax import PowersetSyntax
 
 
 def parse_args():
     parser = ArgumentParser()
+    parser.add_argument("analysis_method", type=str, choices=["logistic_regression", "literal", "independent", "informative"])
     parser.add_argument("--model_dir", type=str, default="models/quantifier/", help="Directory containing all models to evaluate")
     parser.add_argument("--eval_path", type=str, default="data/quantifier/eval.tsv")
     parser.add_argument("--n_items", type=int, default=5, help="Number of entities.")
     parser.add_argument("--false_only", action="store_true")
-    parser.add_argument("--analysis_method", type=str, help="Options: [logistic_regression, literal, independent, informative]")
+    parser.add_argument("--cost", type=float, default=None)
     return parser.parse_args()
 
 
@@ -238,11 +238,16 @@ def test_entailment_informative(sents1, sents2, labels):
         model_path = os.path.join(args.model_dir, model_name)
         predictor = get_predictor(model_path)
         p_y_x = [score(s, predictor)[1].item() for s in xy]
-        p_y_y = [score(s, predictor)[1].item() for s in yy]
         p_T_x = [score(s, predictor)[1].item() for s in xT]
-        p_T_y = [score(s, predictor)[1].item() for s in yT]
         lhs = [a - b for a, b in zip(p_y_x, p_T_x)]
-        rhs = [a - b for a, b in zip(p_y_y, p_T_y)]
+        if args.cost is None:
+            p_y_y = [score(s, predictor)[1].item() for s in yy]
+            p_T_y = [score(s, predictor)[1].item() for s in yT]
+            rhs = [a - b for a, b in zip(p_y_y, p_T_y)]
+        else:
+            assert args.n_items is not None, "Need to specify n_items"
+            syntax = PowersetSyntax(args.n_items)
+            rhs = [args.cost * syntax.get_cost([int(c) for c in y]) for y in sents2]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
         auc_score = auc(p_diff, labels)
         scatterplot(lhs, rhs, labels, f"{model_name}_informative", auc=auc_score)
@@ -270,43 +275,3 @@ if __name__ == "__main__":
         test_entailment_independent_truthful(sents1, sents2, labels)
     elif args.analysis_method == "informative":
         test_entailment_informative(sents1, sents2, labels)
-    elif args.analysis_method == "regression_2":    # I'm not sure it makes sense to have all these analyses in the same script, but this is easy for now
-        use_cuda = torch.cuda.is_available()
-        args = parse_args()
-        models = [
-            model_name
-            for model_name in os.listdir(args.model_dir)
-            if os.path.isdir(os.path.join(args.model_dir, model_name))
-        ]
-        predictors = [get_predictor(os.path.join(args.model_dir, model)) for model in models]
-        syntax = SimpleQuantifierSyntax()
-        worlds = list(SimpleQuantifierWorld.generate_all(args.n_items))
-        semantics = SimpleQuantifierSemantics(worlds)
-        utterances = [u for u in syntax.generate() if u]
-
-        counts = defaultdict(int)
-        totals = defaultdict(int)
-        for _ in range(10):
-            print("Random shuffle of utterances")
-            random.shuffle(utterances)
-            train_utterances = utterances[:3]
-            test_utterances = utterances[3:]
-            train_sents1, train_sents2, train_labels = get_sentences(train_utterances)
-            test_sents1, test_sents2, test_labels = get_sentences(test_utterances)
-            for model_name in models:
-                model_path = os.path.join(args.model_dir, model_name)
-                predictor = get_predictor(model_path)
-                train_features = featurize(train_sents1, train_sents2, predictor)
-                test_features = featurize(test_sents1, test_sents2, predictor)
-                clf = LogisticRegression().fit(train_features, train_labels)
-                preds = clf.predict(test_features)
-                counts[model_name] += (preds == test_labels).sum()
-                totals[model_name] += len(test_labels)
-            counts["true"] = (test_labels == 1).sum()
-            totals["true"] = len(test_labels)
-            counts["false"] = (test_labels == 0).sum()
-            totals["false"] += len(test_labels)
-
-        for model in counts:
-            acc = counts[model] / totals[model]
-            print(f"{model} mean: {acc}")
