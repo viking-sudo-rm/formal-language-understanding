@@ -26,7 +26,7 @@ export PATH=$myconda/bin:$PATH
 
 dir=$SCRATCH/synthetic-language-understanding
 train=$dir/data/$l/$s/$n.txt
-dev=$dir/data/$l/$s/dev.text
+dev=$dir/data/$l/$s/dev.txt
 
 mkdir -p $dir/models/$l/$s
-CUDA=0 TRAIN=$train DEV=$dev N_EPOCHS=5 python -m allennlp train training_config/bi_lm.jsonnet -s=$dir/models/$l/$s/$n
+CUDA=0 TRAIN=$train DEV=$dev N_EPOCHS=20 python -m allennlp train training_config/bi_lm.jsonnet -s=$dir/models/$l/$s/$n

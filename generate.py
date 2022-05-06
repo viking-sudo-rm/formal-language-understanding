@@ -1,4 +1,4 @@
-"""Generate FOL language, then generate documents using RSA."""
+"""Generate documents using the RSA speaker."""
 
 from argparse import ArgumentParser
 import tqdm

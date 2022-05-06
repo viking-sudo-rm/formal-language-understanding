@@ -15,36 +15,40 @@ module load anaconda3/2020.07;
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK;
 source /share/apps/anaconda3/2020.07/etc/profile.d/conda.sh;
 
+myconda=/scratch/wcm9940/.conda/envs/allennlp
+conda activate $myconda
+export PATH=$myconda/bin:$PATH
+
 lang="powerset"
-temp=5
-cost=.5
+n_items=3
 
 # DATA=$DIR/data
 DATA=$SCRATCH/synthetic-language-understanding/data
-mkdir $DATA/$lang
-mkdir $DATA/$lang/literal
-mkdir $DATA/$lang/informative
-mkdir $DATA/$lang/independent
+mkdir $DATA/${lang}-${n_items}
+mkdir $DATA/${lang}-${n_items}/literal
+mkdir $DATA/${lang}-${n_items}/informative
+mkdir $DATA/${lang}-${n_items}/independent
 
-# for n in 10000 100000 1000000 10000000
-for n in 1000000 10000000
+for n in 10000 100000 1000000 10000000
+# for n in 1000000 10000000
+# for n in
 do
     echo Sampling with n=$n...
-    python generate.py $lang -n=$n --temp=$temp --cost=$cost  > $DATA/$lang/independent/$n.txt
-    python generate.py $lang -n=$n --temp=$temp --cost=$cost --depth=0 > $DATA/$lang/literal/$n.txt
-    python generate.py $lang -n=$n --temp=$temp --cost=$cost --dependent > $DATA/$lang/informative/$n.txt
-#    python generate.py $lang -n=$n --temp=5 --cost=$cost --noisy > data/$lang/rsa1-noisy.txt
-#    python generate.py $lang -n=$n --temp=5 --cost=$cost --noisy --depth=0 > data/$lang/rsa0-noisy.txt
+    python generate.py $lang --n_items=$n_items -n=$n --temp=3 --cost=0.5  > $DATA/${lang}-${n_items}/independent/$n.txt
+    python generate.py $lang --n_items=$n_items -n=$n --temp=3 --cost=0.5 --depth=0 > $DATA/${lang}-${n_items}/literal/$n.txt
+    python generate.py $lang --n_items=$n_items -n=$n --temp=3 --cost=0.1 --dependent > $DATA/${lang}-${n_items}/informative/$n.txt
 done
 
+# FIXME: For some reason, these lines don't work. I manually entered them in console to generate dev/test.
+
 # Generate dev set using a different random seed.
-echo Sampling dev sets with n=$n...
-python generate.py $lang --seed=3 -n=10000 --temp=$temp --cost=$cost > $DATA/$lang/independent/dev.txt
-python generate.py $lang --seed=3 -n=10000 --temp=$temp --cost=$cost --depth=0 > $DATA/$lang/literal/dev.txt
-python generate.py $lang --seed=3 -n=10000 --temp=$temp --cost=$cost --dependent > $DATA/$lang/informative/dev.txt
+echo "Sampling dev sets..."
+python generate.py $lang --n_items=$n_items --seed=3 -n=10000 --temp=3 --cost=0.5 > $DATA/${lang}-${n_items}/independent/dev.txt
+python generate.py $lang --n_items=$n_items --seed=3 -n=10000 --temp=3 --cost=0.5 --depth=0 > $DATA/${lang}-${n_items}/literal/dev.txt
+python generate.py $lang --n_items=$n_items --seed=3 -n=10000 --temp=3 --cost=0.1 --dependent > $DATA/${lang}-${n_items}/informative/dev.txt
 
 # Generate test set using a different random seed.
-echo Sampling test sets with n=$n...
-python generate.py $lang --seed=4 -n=10000 --temp=$temp --cost=$cost > $DATA/$lang/independent/test.txt
-python generate.py $lang --seed=4 -n=10000 --temp=$temp --cost=$cost --depth=0 > $DATA/$lang/literal/test.txt
-python generate.py $lang --seed=4 -n=10000 --temp=$temp --cost=$cost --dependent > $DATA/$lang/informative/test.txt
+echo "Sampling test sets..."
+python generate.py $lang --n_items=$n_items --seed=4 -n=10000 --temp=3 --cost=0.5 > $DATA/${lang}-${n_items}/independent/test.txt
+python generate.py $lang --n_items=$n_items --seed=4 -n=10000 --temp=3 --cost=0.5 --depth=0 > $DATA/${lang}-${n_items}/literal/test.txt
+python generate.py $lang --n_items=$n_items --seed=4 -n=10000 --temp=3 --cost=0.1 --dependent > $DATA/${lang}-${n_items}/informative/test.txt
