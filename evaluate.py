@@ -92,6 +92,8 @@ def get_targets(sentence, predictor):
 def score(sentence, predictor):
     lm_embeddings = get_lm_embeddings(sentence, predictor)
     h = torch.Tensor(lm_embeddings)
+    if torch.cuda.is_available():
+        h = h.to("cuda:0")
     # .chunk(2, -1)[0]    # Get only the forward hidden states
     targets = get_targets(sentence, predictor)
     probs = torch.nn.functional.log_softmax(
