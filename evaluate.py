@@ -19,6 +19,7 @@ from allennlp.predictors import Predictor
 from allennlp_models.lm.dataset_readers import *
 
 from src.powerset.syntax import PowersetSyntax
+from src.powerset.serialize import from_string
 
 
 def parse_args():
@@ -246,7 +247,7 @@ def test_entailment_informative(sents1, sents2, labels):
             rhs = [a - b for a, b in zip(p_y_y, p_T_y)]
         else:
             syntax = PowersetSyntax(args.n_items)
-            rhs = [-args.cost * syntax.get_cost([int(c) for c in y]) for y in sents2]
+            rhs = [-args.cost * syntax.get_cost(from_string(y)) for y in sents2]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
         auc_score = auc(p_diff, labels)
         scatterplot(lhs, rhs, labels, f"{model_name}_informative", auc=auc_score)
