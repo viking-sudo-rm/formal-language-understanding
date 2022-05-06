@@ -247,7 +247,7 @@ def test_entailment_informative(sents1, sents2, labels):
         else:
             assert args.n_items is not None, "Need to specify n_items"
             syntax = PowersetSyntax(args.n_items)
-            rhs = [args.cost * syntax.get_cost([int(c) for c in y]) for y in sents2]
+            rhs = [-args.cost * syntax.get_cost([int(c) for c in y]) for y in sents2]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
         auc_score = auc(p_diff, labels)
         scatterplot(lhs, rhs, labels, f"{model_name}_informative", auc=auc_score)
