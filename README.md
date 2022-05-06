@@ -50,3 +50,12 @@ SPEAKER=literal source scripts/launch_train.sh
 SPEAKER=informative source scripts/launch_train.sh
 SPEAKER=independent source scripts/launch_train.sh
 ```
+
+## Evaluation
+
+```shell
+ROOT=$SCRATCH/synthetic-language-understanding
+python evaluate.py informative --cost=0.5 \
+    --model_dir=$ROOT/models/powerset/informative \
+    --eval_path=$ROOT/data/powerset/eval.tsv
+```

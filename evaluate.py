@@ -245,7 +245,6 @@ def test_entailment_informative(sents1, sents2, labels):
             p_T_y = [score(s, predictor)[1].item() for s in yT]
             rhs = [a - b for a, b in zip(p_y_y, p_T_y)]
         else:
-            assert args.n_items is not None, "Need to specify n_items"
             syntax = PowersetSyntax(args.n_items)
             rhs = [-args.cost * syntax.get_cost([int(c) for c in y]) for y in sents2]
         p_diff = [abs(a - b) for a, b in zip(lhs, rhs)]
