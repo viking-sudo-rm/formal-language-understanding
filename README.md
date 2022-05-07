@@ -53,9 +53,19 @@ SPEAKER=independent source scripts/launch_train.sh
 
 ## Evaluation
 
+General evaluation:
+
+```shell
+python evaluate.py independent \
+    --model_dir=$ROOT/models/powerset-3/literal \
+    --eval_path=$ROOT/data/powerset-3/eval.tsv
+```
+
+Evaluation setting cost to its gold value:
+
 ```shell
 ROOT=$SCRATCH/synthetic-language-understanding
-python evaluate.py informative --cost=0.5 \
-    --model_dir=$ROOT/models/powerset/informative \
-    --eval_path=$ROOT/data/powerset/eval.tsv
+python evaluate.py informative --cost=0.1 \
+    --model_dir=$ROOT/models/powerset-3/informative \
+    --eval_path=$ROOT/data/powerset-3/eval.tsv
 ```
