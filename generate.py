@@ -1,4 +1,4 @@
-"""Generate FOL language, then generate documents using RSA."""
+"""Generate documents using the RSA speaker."""
 
 from argparse import ArgumentParser
 import tqdm
@@ -12,6 +12,10 @@ from src.quantifier.semantics import SimpleQuantifierSemantics, SimpleQuantifier
 from src.quantifier.serialize import to_string as q_to_string
 from src.powerset.syntax import PowersetSyntax
 from src.powerset.semantics import PowersetSemantics
+from src.powerset.serialize import to_string as s_to_string
+from src.binary.syntax import BinarySyntax
+from src.binary.semantics import BinarySemantics
+from src.binary.serialize import BinarySerializer
 from src.rational_speech import RationalAgent, RationalSpeechActs
 
 
@@ -19,7 +23,7 @@ logging.basicConfig()
 log = logging.getLogger("generate")
 log.setLevel(logging.INFO)
 
-languages = ["quantifier", "arithmetic", "powerset"]
+languages = ["quantifier", "arithmetic", "powerset", "binary"]
 
 
 def parse_args():
@@ -51,9 +55,14 @@ def main(args):
         to_string = q_to_string
     elif args.lang == "powerset":
         syntax = PowersetSyntax(args.n_items)
-        semantics = PowersetSemantics()
         worlds = [w for w in range(args.n_items)]
-        to_string = lambda prop: "".join(str(x) for x in prop)
+        semantics = PowersetSemantics()
+        to_string = s_to_string
+    elif args.lang == "binary":
+        syntax = BinarySyntax()
+        worlds = [0, 1]
+        semantics = BinarySemantics()
+        to_string = BinarySerializer().to_string
     else:
         raise NotImplementedError(f"Unknown lang: {args.lang}.")
     utterances = list(syntax.generate())
