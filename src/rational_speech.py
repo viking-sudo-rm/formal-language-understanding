@@ -13,6 +13,7 @@ from typing import Any, Callable, Iterable, List, NamedTuple, Optional, Tuple
 import torch
 from torch import Tensor
 from torch.distributions import Categorical
+import math
 
 
 INF = 1e9
@@ -44,6 +45,7 @@ class RationalSpeechActs(NamedTuple):
     truth_values: Tensor
     costs: Tensor
     errors: Optional[Tensor] = None
+    syntax: Optional[Any] = None
 
     @property
     def num_utterances(self):
@@ -143,18 +145,85 @@ class RationalAgent:
 
         return listen_probs, speak_probs
 
-    def speak(
+
+    def get_listen_speak_probs_wrapper(
         self,
-        world: int,
         inferred_belief_state: Optional[Tensor] = None,
-        context: List[str] = None,
+        context: List[List[int]] = None,
     ):
-        """Sample an utterance, potentially conditioned on one sentence of preceding context."""
+        """Get the speaker probabilities, handling the presence or absence of context properly"""
         if context:
             context_idxs = [self.rsa.utterances.index(c) for c in context]
         else:
             context_idxs = None
         _, speak_probs = self.get_listen_speak_probs(inferred_belief_state, context_idxs)
+        return speak_probs
+
+
+    def speak(
+        self,
+        world: int,
+        inferred_belief_state: Optional[Tensor] = None,
+        context: List[List[int]] = None,
+    ):
+        """Sample an utterance, potentially conditioned on one sentence of preceding context."""
+        speak_probs = self.get_listen_speak_probs_wrapper(inferred_belief_state, context)
         dist = Categorical(speak_probs[:, world])
         utter_idx = dist.sample()
         return self.rsa.utterances[utter_idx]
+
+
+    # def score_next(
+    #     self,
+    #     utterance: List[int],
+    #     context: List[List[int]],
+    #     inferred_belief_state: Optional[Tensor] = None,
+    # ):
+    #     """Score the likelihood a single utterance conditioned on a context"""
+    #     speak_probs = self.get_listen_speak_probs_wrapper(inferred_belief_state, context)
+    #     utterance_idx = self.rsa.utterances.index(utterance)
+    #
+    #     # if not self.conditional_independence and context:
+    #     #     # The context-dependent case, where the prior is informed by linguistic context.
+    #     #     word = context[-1]
+    #     #     full_prior, _ = self.get_listen_speak_probs(inferred_belief_state, context[:-1])
+    #     #     prior = full_prior[word, :]
+    #     prob
+    #
+    #     log_prob = math.log(sum(speak_probs[utterance_idx, :]))
+    #     return log_prob
+
+
+    def score_all(
+        self,
+        utterances: List[List[int]],
+        inferred_belief_state: Optional[Tensor] = None,
+        context: List[List[int]] = None,
+    ):
+        """Score the likelihood a sequence of utterances, optionally conditioned on a context
+        P(U) = sum_w P(U|w) P(w)
+             = sum_w [ prod_i P(u_i|u_1,...,u_{i-1},w) ] P(w)
+        """
+        prior = None
+        if not self.conditional_independence and context:
+            # The context-dependent case, where the prior is informed by linguistic context.
+            word = context[-1]
+            full_prior, _ = self.get_listen_speak_probs(inferred_belief_state, context[:-1])
+            prior = full_prior[word, :]
+
+        if context is None:
+            context = []
+
+        speaker_probs = prior if prior else torch.ones(self.rsa.num_worlds)/self.rsa.num_worlds
+        for utt in utterances:
+            if len(context) > 0 and self.rsa.syntax.is_empty(context[-1]):    # If the stop token has already been provided the probability is 0
+                speaker_probs = torch.zeros(self.rsa.num_worlds)
+                break
+            else:
+                speaker_probs_utt = self.get_listen_speak_probs_wrapper(inferred_belief_state, context)
+                utt_idx = self.rsa.utterances.index(utt)
+                speaker_probs = torch.mul(speaker_probs, speaker_probs_utt[utt_idx])
+                # log_prob += self.score_next(utt, context, inferred_belief_state)
+                context.append(utt)
+        prob = sum(speaker_probs)
+        return prob
