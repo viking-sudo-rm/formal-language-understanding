@@ -93,7 +93,7 @@ class Generator:
             self.generate_one()
 
     def score(self, utterances, context=None):
-        return self.agent.score_all(utterances, context)
+        return self.agent.score(utterances, context)
 
 @torch.no_grad()
 def main(args):

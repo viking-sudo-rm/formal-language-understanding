@@ -6,7 +6,7 @@ from generate import Generator, languages
 from src.powerset.serialize import to_string
 from argparse import *
 from math import log
-from numpy import inf
+from numpy import inf, prod
 # import sys
 
 def parse_args():
@@ -46,8 +46,8 @@ sentences = [list(s) + [[1] * n_worlds] for s in sentences if semantics.coordina
 probabilities = [my_log(generator.score(s).item()) for s in sentences]
 pd.DataFrame([(to_string(s), p) for s, p in zip(sentences, probabilities)], columns=("sentence", "logprob"))\
     .to_csv(f"{args.eval_dir}/eval_prob-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")
-print(f"Utterances cover {sum(probabilities)} of probability mass")
+print(f"Utterances cover {prod(probabilities)} of probability mass")
 
 pairs = filter(lambda x: x[0] != x[1], product(sentences, sentences))
-pd.DataFrame([(to_string(p[0]), to_string(p[1]), semantics.entails(p[0], p[1])) for p in pairs], columns=("premise", "hypothesis", "entailment"))\
-    .to_csv(f"{args.eval_dir}/eval_entail-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, header=False, sep="\t")
+pd.DataFrame([(to_string(p[0]), to_string(p[1]), semantics.entails_sent(p[0], p[1])) for p in pairs], columns=("premise", "hypothesis", "entailment"))\
+    .to_csv(f"{args.eval_dir}/eval_entail-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")

@@ -17,6 +17,7 @@ import math
 
 
 INF = 1e9
+EPSILON = 1e-20
 
 
 def listify(callback_fn: Callable[..., Iterable[Any]]) -> Callable[..., List[Any]]:
@@ -77,7 +78,7 @@ class RationalAgent:
         """Represents a speaker step in the RSA recursion.
 
         Takes and returns (n_utterances, n_worlds). The input is a distribution over dim1; output over dim0."""
-        utilities = (listen_probs + 1e-6).log()
+        utilities = (listen_probs + EPSILON).log()
         # utilities = torch.where(utilities > -INF, utilities, -INF * torch.ones_like(utilities))
         # energies = utilities - self.rsa.costs.unsqueeze(dim=1)
         # return (self.temp * energies).softmax(dim=0)
@@ -194,13 +195,13 @@ class RationalAgent:
     #     return log_prob
 
 
-    def score_all(
+    def score(
         self,
         utterances: List[List[int]],
         inferred_belief_state: Optional[Tensor] = None,
         context: List[List[int]] = None,
     ):
-        """Score the likelihood a sequence of utterances, optionally conditioned on a context
+        """Score the likelihood a sequence, optionally conditioned on a context
         P(U) = sum_w P(U|w) P(w)
              = sum_w [ prod_i P(u_i|u_1,...,u_{i-1},w) ] P(w)
         """
@@ -223,7 +224,6 @@ class RationalAgent:
                 speaker_probs_utt = self.get_listen_speak_probs_wrapper(inferred_belief_state, context)
                 utt_idx = self.rsa.utterances.index(utt)
                 speaker_probs = torch.mul(speaker_probs, speaker_probs_utt[utt_idx])
-                # log_prob += self.score_next(utt, context, inferred_belief_state)
                 context.append(utt)
         prob = sum(speaker_probs)
-        return prob
+        return prob.item()
