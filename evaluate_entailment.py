@@ -136,7 +136,7 @@ if __name__ == "__main__":
         g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",)
                         # units="premise", estimator=None)
         g.set(xscale="log", yscale="log", ylim=(1e-3, 1e3))
-        plt.savefig("plots/line.pdf")
+        plt.savefig(f"plots/line_{args.distributional_model}_{args.size}.pdf")
         plt.clf()
 
     if "min_n" in args.plot_type:
