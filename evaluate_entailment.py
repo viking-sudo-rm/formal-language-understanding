@@ -69,11 +69,6 @@ if __name__ == "__main__":
     test_data = pd.read_csv(args.test_data, sep="\t")
     if args.downsample:
         test_data = test_data.sample(args.downsample)
-    if args.auc:
-        for model in models.keys():
-            pred = test_data.apply(lambda x: models[model].test_gricean(x.premise, x.hypothesis), axis=1)
-            auc_score = auc(list(pred), [int(not x) for x in test_data.entailment])
-            print(auc_score)
     # if args.incremental_eval:
     EPSILON = 0.1
     models = {}
@@ -83,14 +78,33 @@ if __name__ == "__main__":
         print("Reading training data")
         text = [line.split() for line in open(train_path)]
         print("Reading training data complete")
-        for _ in tqdm.trange(args.n_increments):
+        for i in range(args.n_increments):
+            print(f"START:Training ngram model {i+1}/{args.n_increments}")
             ngram = NgramModel.train_lm(args.order, text=text)
             model = NgramModel(empty="1" * args.n_items, lm=ngram)
             models[size] = model
-            text = choice(text, replace=False, size=size)
             size //= 2
+            text = choice(text, replace=False, size=size)
+            print(f"END:Training ngram model {i+1}/{args.n_increments}")
     elif args.distributional_model == "neural_lm":
         pass  # TODO
+    elif args.distributional_model == "text_frequency":
+        empty = "1" * args.n_items
+        size = args.size
+        train_path = os.path.join(args.training_dir, str(size)) + ".txt"
+        text = [line.strip().removesuffix(empty).strip() for line in open(train_path)]
+        for i in range(args.n_increments):
+            print(f"START:Training text frequency model {i+1}/{args.n_increments}")
+            model = TextFrequency(empty="1" * args.n_items, text=text)
+            models[size] = model
+            size //= 2
+            text = choice(text, replace=False, size=size)
+            print(f"END:Training text frequency model {i+1}/{args.n_increments}")
+    if args.auc:
+        for model in models.keys():
+            pred = test_data.apply(lambda x: models[model].test_gricean(x.premise, x.hypothesis), axis=1)
+            auc_score = auc(list(pred), [int(not x) for x in test_data.entailment])
+            print(auc_score)
 
     preds = {}
     for model in models.keys():

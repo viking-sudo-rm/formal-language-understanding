@@ -89,3 +89,21 @@ for agent in vanilla dependent; do
     --eval_dir=data/powerset/dependent
 done
 ```
+
+## Evaluate n-gram model
+```shell
+cd ${PROJECT_ROOT}/src/evaluation
+python evaluate_entailment.py \
+--test_data=data/powerset/dependent/eval_entail-3_worlds-5_sents.tsv \
+--distributional_model=ngram \
+--lang=powerset \
+--dependent \
+--n_items=3 \
+--temp=3 \
+--cost=0.1 \
+--training_dir=data/powerset/dependent \
+--order=3 \
+--size=100000000 \
+--plot_type line \
+--complexity=pxy
+```

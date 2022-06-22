@@ -2,6 +2,7 @@ from typing import Optional, List
 from src.rational_speech import RationalAgent
 import math
 from src.powerset.serialize import from_string
+from collections import Counter
 import numpy as np
 
 class DistributionalModel():
@@ -84,7 +85,37 @@ class RSAModel(DistributionalModel):
         return p if p != 0.0 else self.epsilon
 
 
+class TextFrequency(DistributionalModel):
 
+    def __init__(self, empty, lm=None, text=None):
+        super().__init__(empty)
+        if lm is not None:
+            self.lm = lm
+        elif text is not None:
+            self.lm = self.train_lm(text=text)
+        else:
+            raise ValueError("Either lm or train_path argument must be supplied.")
+
+    def train_lm(self, train_path=None, text=None):
+        if text is None:
+            if train_path is None:
+                raise ValueError("One of train_path or text must be provided.")
+            text = [line.removesuffix(self.empty) for line in open(train_path)]
+        counts = Counter(text)
+        total = len(text)
+        lm = {k: counts[k] / total for k in counts.keys()}
+        self.lm = lm
+        return lm
+
+    def score(self, sentence: str, context: Optional[List[str]] = None) -> float:
+        """Score a sentence. Do not include padding, but may include model's own EOS token: 1^|w|"""
+        if context is not None:
+            raise ValueError("This model can't predict conditional probabilities.")
+        if sentence in self.lm:
+            p = self.lm[sentence]
+            return p if p != 0.0 else self.epsilon
+        else:
+            return self.epsilon
 
 
 # def test_entailment_uniform_true(sents1, sents2, labels):
