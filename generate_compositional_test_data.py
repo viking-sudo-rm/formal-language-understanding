@@ -43,11 +43,16 @@ def my_log(x):
     return -inf if x == 0 else log(x)
 
 sentences = [list(s) + [[1] * n_worlds] for s in sentences if semantics.coordinate(s) != [0] * n_worlds]  # Filter out contradictions. This could be done more efficiently
-probabilities = [my_log(generator.score(s).item()) for s in sentences]
-pd.DataFrame([(to_string(s), p) for s, p in zip(sentences, probabilities)], columns=("sentence", "logprob"))\
-    .to_csv(f"{args.eval_dir}/eval_prob-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")
+probabilities = [my_log(generator.score(s)) for s in sentences]
+df_probs = pd.DataFrame([(to_string(s), p) for s, p in zip(sentences, probabilities)], columns=("sentence", "logprob"))
+df_probs.to_csv(f"{args.eval_dir}/eval_prob-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")
 print(f"Utterances cover {prod(probabilities)} of probability mass")
 
 pairs = filter(lambda x: x[0] != x[1], product(sentences, sentences))
-pd.DataFrame([(to_string(p[0]), to_string(p[1]), semantics.entails_sent(p[0], p[1])) for p in pairs], columns=("premise", "hypothesis", "entailment"))\
-    .to_csv(f"{args.eval_dir}/eval_entail-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")
+df_pairs = pd.DataFrame([(to_string(p[0]), to_string(p[1]), semantics.entails_sent(p[0], p[1])) for p in pairs],
+                        columns=("premise", "hypothesis", "entailment"))
+df_pairs = df_pairs.merge(df_probs, left_on="premise", right_on="sentence")\
+                   .merge(df_probs, left_on="hypothesis", right_on="sentence", suffixes=("_premise", "_hypothesis"))\
+                   .drop(["sentence_premise", "sentence_hypothesis"], axis=1)
+
+df_pairs.to_csv(f"{args.eval_dir}/eval_entail-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")

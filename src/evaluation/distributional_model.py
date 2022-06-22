@@ -2,11 +2,13 @@ from typing import Optional, List
 from src.rational_speech import RationalAgent
 import math
 from src.powerset.serialize import from_string
+import numpy as np
 
 class DistributionalModel():
 
     def __init__(self, empty):
         self.empty = empty
+        self.epsilon = 1e-20
 
     def score(self, sentence: str, context: Optional[List[str]] = None) -> float:
         pass
@@ -27,7 +29,7 @@ class DistributionalModel():
         rhs = self.score(xy)
         return abs(lhs - rhs)
 
-    def test_gricean(self, premise, hypothesis):
+    def test_gricean(self, premise, hypothesis, log_ratio=False):
         """[[x]] ⊆ [[y]] <==> p(xy)/p(xT) = p(yy)/p(yT)"""
         xy = self.concat(premise, hypothesis)
         xT = self.concat(premise, self.empty)
@@ -35,7 +37,10 @@ class DistributionalModel():
         yT = self.concat(hypothesis, self.empty)
         lhs = self.score(xy) / self.score(xT)
         rhs = self.score(yy) / self.score(yT)
-        return abs(lhs - rhs)
+        if log_ratio:
+            return abs(math.log(lhs) - math.log(rhs))
+        else:
+            return abs(lhs - rhs)
 
 
 class NgramModel(DistributionalModel):
@@ -45,10 +50,13 @@ class NgramModel(DistributionalModel):
         self.lm = lm
 
     @staticmethod
-    def train_lm(order, train_path):
+    def train_lm(order, train_path=None, text=None):
         from nltk.lm.preprocessing import padded_everygram_pipeline
         from nltk.lm import MLE
-        text = [line.split() for line in open(train_path)]
+        if text is None:
+            if train_path is None:
+                raise ValueError("One of train_path or text must be provided.")
+            text = [line.split() for line in open(train_path)]
         train, vocab = padded_everygram_pipeline(order, text)
         lm = MLE(order)
         lm.fit(train, vocab)
@@ -61,7 +69,7 @@ class NgramModel(DistributionalModel):
         for word in sentence.split():
             p *= self.lm.score(word, context)
             context = context[1:] + [word]
-        return p
+        return p if p != 0.0 else self.epsilon
 
 
 class RSAModel(DistributionalModel):
@@ -72,7 +80,8 @@ class RSAModel(DistributionalModel):
 
     def score(self, sentence: str, context: Optional[List[str]] = None) -> float:
         sentence = from_string(sentence)
-        return self.rational_agent.score(utterances=sentence, context=context)
+        p = self.rational_agent.score(utterances=sentence, context=context)
+        return p if p != 0.0 else self.epsilon
 
 
 
