@@ -123,9 +123,10 @@ if __name__ == "__main__":
     if args.complexity == "length":
         df["complexity"] = df.apply(lambda x: len(x.premise.split()) + len(x.hypothesis.split()), axis=1)
     elif args.complexity == "pxy":
-        df["complexity"] = pd.qcut(df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1),\
-                                          q = 7,
-                                          labels = False)
+        df["complexity"] = df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1)
+        # df["complexity"] = pd.qcut(df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1),\
+        #                                   q = 7,
+        #                                   labels = False)
 
 
 
@@ -140,6 +141,20 @@ if __name__ == "__main__":
         plt.clf()
 
     if "min_n" in args.plot_type:
+        # df.set_index(list(df.columns[-6:])).apply(lambda x: min([k for k in dict(x) if dict(x)[k] < 0.1 and dict(x)[k]>=0]), axis=1)
+        # z = df.set_index(list(df.columns[-6:])).apply(lambda x: dict(x), axis=1).iloc[2]
+        def f(x):
+            d = dict(x)
+            sizes = [k for k in d if d[k] <= 1 and d[k] > 0]
+            if len(sizes) > 0:
+                return min(sizes)
+            else:
+                return None
+        df = df.set_index(list(df.columns[-6:])).apply(f, axis=1)
+
+
+        x=1
+        pass
 
 
     # if "line" in args.plot_type:
