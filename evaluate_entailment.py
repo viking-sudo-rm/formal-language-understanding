@@ -23,7 +23,7 @@ def parse_args():
     parser.add_argument("--auc", action="store_true", help="Should compute AUC for each model")
     parser.add_argument("--plot_type", nargs="+", type=str, help="Options: line, scatter")
     parser.add_argument("--downsample", type=int, help="how many test pairs to use")
-    parser.add_argument("--complexity", type=str, help="What complexity measure to compute & use. Options: length, pxy")
+    parser.add_argument("--complexity", type=str, help="What complexity measure to compute & use. Options: length, surprisal, surprisal_bin")
     parser.add_argument("--n_increments", type=int, help="how many incremental models to train")
 
 
@@ -122,12 +122,12 @@ if __name__ == "__main__":
 
     if args.complexity == "length":
         df["complexity"] = df.apply(lambda x: len(x.premise.split()) + len(x.hypothesis.split()), axis=1)
-    elif args.complexity == "pxy":
+    elif args.complexity == "surprisal_bin":
+        df["complexity"] = pd.qcut(df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1),
+                                   q=7,
+                                   labels=False)
+    elif args.complexity == "surprisal":
         df["complexity"] = df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1)
-        # df["complexity"] = pd.qcut(df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1),\
-        #                                   q = 7,
-        #                                   labels = False)
-
 
 
     if "line" in args.plot_type:
@@ -136,7 +136,7 @@ if __name__ == "__main__":
         #              palette="crest", )
         g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",)
                         # units="premise", estimator=None)
-        g.set(xscale="log", yscale="log", ylim=(1e-3, 1e3))
+        g.set(xscale="log", yscale="log")
         plt.savefig(f"plots/line_{args.distributional_model}_{args.size}.pdf")
         plt.clf()
 
@@ -150,11 +150,15 @@ if __name__ == "__main__":
                 return min(sizes)
             else:
                 return None
-        df = df.set_index(list(df.columns[-6:])).apply(f, axis=1)
+        df = df.set_index(list(df.columns[-6:])).apply(f, axis=1).reset_index().rename({0: "min_n"}, axis=1)
+        from numpy import isnan
+        df = df[df.min_n.apply(lambda x: not isnan(x))]
+        g = sns.relplot(data=df, x="complexity", y="min_n", kind="scatter", col="entailment")
+        g.set(yscale="log")
+        plt.savefig(f"plots/min_n{args.distributional_model}_{args.size}.pdf")
+        plt.clf()
 
 
-        x=1
-        pass
 
 
     # if "line" in args.plot_type:
