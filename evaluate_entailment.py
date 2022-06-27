@@ -122,21 +122,36 @@ if __name__ == "__main__":
 
     if args.complexity == "length":
         df["complexity"] = df.apply(lambda x: len(x.premise.split()) + len(x.hypothesis.split()), axis=1)
+        COMPLEXITY = "Sentence\nlength"
     elif args.complexity == "surprisal_bin":
         df["complexity"] = pd.qcut(df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1),
                                    q=7,
                                    labels=False)
+        COMPLEXITY = "Complexity (Relative rank by surprisal)"
     elif args.complexity == "surprisal":
         df["complexity"] = df.apply(lambda x: -1*(x.logprob_premise + x.logprob_hypothesis), axis=1)
+        COMPLEXITY = "Complexity (surprisal)"
 
 
     if "line" in args.plot_type:
         df = df.set_index(list(df.columns[-6:])).stack().reset_index().rename({"level_6": "n", 0: "distance"}, axis=1)
         # sns.lineplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", col="entailment",
         #              palette="crest", )
-        g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",)
+        g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",
+                        height=2.5, aspect=1)
                         # units="premise", estimator=None)
         g.set(xscale="log", yscale="log")
+        g._legend.set_title(COMPLEXITY)
+        for ax in g.axes.flat:
+            ax.set_xlabel("Training sentences")
+
+        g.axes[0, 0].set_title(r"x does not entail y")
+        g.axes[0, 1].set_title(r"x entails y")
+
+        g.axes[0, 0].set_ylabel(r"g(xy)")
+        # plt.rcParams['text.usetex'] = True
+        # g.axes[0,0].set_ylabel(r"g_{\^{p}}(xy)", fontsize=16)
+        # plt.tight_layout()
         plt.savefig(f"plots/line_{args.distributional_model}_{args.size}.pdf")
         plt.clf()
 
