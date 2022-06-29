@@ -11,6 +11,8 @@ from numpy.random import choice
 import seaborn as sns
 import matplotlib.pyplot as plt
 import tqdm
+import matplotlib
+matplotlib.font_manager._rebuild()
 
 def parse_args():
     parser = ArgumentParser()
