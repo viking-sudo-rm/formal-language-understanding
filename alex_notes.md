@@ -105,5 +105,6 @@ python evaluate_entailment.py \
 --order=3 \
 --size=100000000 \
 --plot_type line \
---complexity=pxy
+--complexity=length
+--auc
 ```

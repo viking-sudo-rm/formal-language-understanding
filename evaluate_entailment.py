@@ -100,18 +100,18 @@ if __name__ == "__main__":
             size //= 2
             text = choice(text, replace=False, size=size)
             print(f"END:Training text frequency model {i+1}/{args.n_increments}")
-    if args.auc:
-        for model in models.keys():
-            pred = test_data.apply(lambda x: models[model].test_gricean(x.premise, x.hypothesis), axis=1)
-            auc_score = auc(list(pred), [int(not x) for x in test_data.entailment])
-            print(auc_score)
+    # if args.auc:
+    #     for model in models.keys():
+    #         pred = test_data.apply(lambda x: models[model].test_gricean(x.premise, x.hypothesis), axis=1)
+    #         auc_score = auc(list(pred), [int(not x) for x in test_data.entailment])
+    #         print(auc_score)
 
     preds = {}
     for model in models.keys():
         preds[model] = test_data.apply(lambda x: models[model].test_gricean(x.premise, x.hypothesis, log_ratio=True), axis=1)
         if args.auc:
             auc_score = auc(list(preds[model]), [int(not x) for x in test_data.entailment])
-            print("model: ", auc_score)
+            print(f"{model}: ", auc_score)
 
 
     df = pd.concat([pd.DataFrame(preds), test_data], axis=1)
@@ -135,24 +135,23 @@ if __name__ == "__main__":
 
     if "line" in args.plot_type:
         df = df.set_index(list(df.columns[-6:])).stack().reset_index().rename({"level_6": "n", 0: "distance"}, axis=1)
-        # sns.lineplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", col="entailment",
-        #              palette="crest", )
+        plt.rcParams["font.family"] = "Times New Roman"
         g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",
-                        height=2.5, aspect=1)
-                        # units="premise", estimator=None)
+                        height=2.5, aspect=1,)
         g.set(xscale="log", yscale="log")
         g._legend.set_title(COMPLEXITY)
         for ax in g.axes.flat:
             ax.set_xlabel("Training sentences")
 
-        g.axes[0, 0].set_title(r"x does not entail y")
-        g.axes[0, 1].set_title(r"x entails y")
+        g.axes[0, 0].set_title(r"$x \nsubseteq y$")
+        g.axes[0, 1].set_title(r"$x \subseteq y$")
 
-        g.axes[0, 0].set_ylabel(r"g(xy)")
-        # plt.rcParams['text.usetex'] = True
-        # g.axes[0,0].set_ylabel(r"g_{\^{p}}(xy)", fontsize=16)
-        # plt.tight_layout()
+        g.axes[0, 0].set_ylabel(r"$g_\hat{p}(xy)$")
         plt.savefig(f"plots/line_{args.distributional_model}_{args.size}.pdf")
+
+        for ax in g.axes.flat:
+            ax.set_ylim(0.01, 100)
+        plt.savefig(f"plots/line_{args.distributional_model}_{args.size}_scale.pdf")
         plt.clf()
 
     if "min_n" in args.plot_type:
