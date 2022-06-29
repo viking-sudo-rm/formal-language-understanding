@@ -12,7 +12,7 @@ plt.rcParams["font.family"] = "Times New Roman"
 class SampleEstimator:
 
     def __init__(self,
-                 eps: float = .1,
+                 eps: float = 3.,
                  delta: float = .1,
                  ppl: float = 20.,
                  p_true: float = .5,
