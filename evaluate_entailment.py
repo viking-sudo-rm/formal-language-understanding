@@ -111,7 +111,9 @@ if __name__ == "__main__":
         preds[model] = test_data.apply(lambda x: models[model].test_gricean(x.premise, x.hypothesis, log_ratio=True), axis=1)
         if args.auc:
             auc_score = auc(list(preds[model]), [int(not x) for x in test_data.entailment])
-            print(f"{model}: ", auc_score)
+            non_zero = [(a, b) for a, b in zip(preds[model], [int(not x) for x in test_data.entailment]) if a != 0]
+            auc_score_without_zero = auc([a for a, b in non_zero], [b for a, b in non_zero])
+            print(f"{model}: ", auc_score, auc_score_without_zero)
 
 
     df = pd.concat([pd.DataFrame(preds), test_data], axis=1)
@@ -135,7 +137,7 @@ if __name__ == "__main__":
 
     if "line" in args.plot_type:
         df = df.set_index(list(df.columns[-6:])).stack().reset_index().rename({"level_6": "n", 0: "distance"}, axis=1)
-        plt.rcParams["font.family"] = "Times New Roman"
+        plt.rcParams["font.family"] = "serif"
         g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",
                         height=2.5, aspect=1,)
         g.set(xscale="log", yscale="log")
