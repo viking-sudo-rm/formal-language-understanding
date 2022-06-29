@@ -11,8 +11,6 @@ from numpy.random import choice
 import seaborn as sns
 import matplotlib.pyplot as plt
 import tqdm
-import matplotlib
-matplotlib.font_manager._rebuild()
 
 def parse_args():
     parser = ArgumentParser()
@@ -137,7 +135,6 @@ if __name__ == "__main__":
 
     if "line" in args.plot_type:
         df = df.set_index(list(df.columns[-6:])).stack().reset_index().rename({"level_6": "n", 0: "distance"}, axis=1)
-        plt.rcParams["font.family"] = "Times New Roman"
         g = sns.relplot(data=df[~(df.distance == 0)], x="n", y="distance", hue="complexity", kind="line", col="entailment", palette="crest",
                         height=2.5, aspect=1,)
         g.set(xscale="log", yscale="log")
