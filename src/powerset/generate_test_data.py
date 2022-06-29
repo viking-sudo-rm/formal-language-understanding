@@ -3,8 +3,10 @@ import syntax
 from itertools import product
 import pandas as pd
 
+n_worlds = 5
+
 semantics = semantics.PowersetSemantics()
-syntax = syntax.PowersetSyntax(5)
+syntax = syntax.PowersetSyntax(n_worlds)
 to_string = lambda s: "".join(str(x) for x in s)
 
 pairs = filter(lambda x: x[0] != x[1], product(syntax.generate(), syntax.generate()))
