@@ -5,7 +5,7 @@
 #SBATCH --error=./%j_%x.err
 #SBATCH --export=ALL
 #SBATCH --time=48:00:00
-#SBATCH --mem=4G
+#SBATCH --mem=256G
 #SBATCH -c 4
 
 
@@ -20,7 +20,7 @@ cd ${PROJECT_ROOT}
 
 python evaluate_entailment.py \
 --test_data=data/powerset/dependent/eval_entail-3_worlds-5_sents.tsv \
---distributional_model=ngram \
+--distributional_model=${1} \
 --lang=powerset \
 --dependent \
 --n_items=3 \
@@ -28,11 +28,11 @@ python evaluate_entailment.py \
 --cost=0.1 \
 --training_dir=data/powerset/dependent \
 --order=3 \
---size=1000000 \
---plot_type line \
---complexity=pxy
---n_increments=15
+--size=${4} \
+--plot_type ${2} \
+--complexity=${3} \
+--n_increments=22 \
+--auc
 "
-
 
 

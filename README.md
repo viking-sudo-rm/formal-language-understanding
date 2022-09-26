@@ -69,3 +69,47 @@ python evaluate.py informative --cost=0.1 \
     --model_dir=$ROOT/models/powerset-3/informative \
     --eval_path=$ROOT/data/powerset-3/eval.tsv
 ```
+
+
+## Generate compositional test data
+
+We use the script `generate_compositional_test_data.py` to generate pairs of entailed and non-entailed texts. In addition to entailment labels, it will also output gold probabilities of each text according to the RSA model.
+
+Use argument `n_items` to specify the number of worlds, and `max_sent_len` to specify the maximum number to lexical items in a premise or hypothesis (not including the stop token).
+
+For example:
+```shell
+cd ${PROJECT_ROOT}
+for agent in vanilla dependent; do
+  python generate_compositional_test_data.py ${lang} 
+    --${agent} \
+    --n_items=3 \
+    --temp=5 \
+    --cost=0.1 \
+    --max_sent_len=5 \
+    --eval_dir=data/powerset/dependent
+```
+
+
+
+## N-gram model evaluation
+
+The following command will reproduce our n-gram model evaluation.
+
+```shell
+cd ${PROJECT_ROOT}/src/evaluation
+python evaluate_entailment.py \
+--test_data=data/powerset/dependent/eval_entail-3_worlds-5_sents.tsv \
+--distributional_model=ngram \
+--lang=powerset \
+--dependent \
+--n_items=3 \
+--cost=0.1 \
+--training_dir=data/powerset/dependent \
+--order=3 \
+--size=100000000 \
+--plot_type=line \
+--complexity=length \
+--n-increments=22
+--auc
+```

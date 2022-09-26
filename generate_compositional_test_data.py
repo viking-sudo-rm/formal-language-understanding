@@ -33,7 +33,6 @@ n_worlds = args.n_items
 max_sent_len = args.max_sent_len
 semantics = semantics.PowersetSemantics()
 syntax = syntax.PowersetSyntax(n_worlds)
-# to_string = lambda s: "".join(str(x) for x in s)
 sentences = iter([])
 vocab = [w for w in syntax.generate() if w != [1] * n_worlds]
 for l in range(1, max_sent_len+1):
@@ -46,7 +45,6 @@ sentences = [list(s) + [[1] * n_worlds] for s in sentences if semantics.coordina
 probabilities = [my_log(generator.score(s)) for s in sentences]
 df_probs = pd.DataFrame([(to_string(s), p) for s, p in zip(sentences, probabilities)], columns=("sentence", "logprob"))
 df_probs.to_csv(f"{args.eval_dir}/eval_prob-{n_worlds}_worlds-{max_sent_len}_sents.tsv", index=False, sep="\t")
-print(f"Utterances cover {prod(probabilities)} of probability mass")
 
 pairs = filter(lambda x: x[0] != x[1], product(sentences, sentences))
 df_pairs = pd.DataFrame([(to_string(p[0]), to_string(p[1]), semantics.entails_sent(p[0], p[1])) for p in pairs],
